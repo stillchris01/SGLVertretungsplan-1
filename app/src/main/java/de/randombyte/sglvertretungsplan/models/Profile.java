@@ -1,8 +1,11 @@
 package de.randombyte.sglvertretungsplan.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.List;
 
-public class Profile {
+public class Profile implements Parcelable {
 
     private int id;
     private boolean oberstufe;
@@ -11,6 +14,14 @@ public class Profile {
     private List<Kurs> kursList;
 
     public Profile() {
+    }
+
+    private Profile(Parcel source) {
+        id = source.readInt();
+        oberstufe = (boolean) source.readValue(null);
+        stufe = source.readString();
+        suffix = source.readString();
+        source.readList(kursList, Kurs.class.getClassLoader());
     }
 
     public int getId() {
@@ -51,5 +62,35 @@ public class Profile {
 
     public void setKursList(List<Kurs> kursList) {
         this.kursList = kursList;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Profile> CREATOR = new Creator<Profile>() {
+        @Override
+        public Profile createFromParcel(Parcel source) {
+            return new Profile(source);
+        }
+
+        @Override
+        public Profile[] newArray(int size) {
+            return new Profile[size];
+        }
+    };
+
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeValue(oberstufe);
+        dest.writeString(stufe);
+        dest.writeString(suffix);
+        dest.writeList(kursList);
+    }
+
+    @Override
+    public String toString() {
+        return isOberstufe() ? stufe : stufe + suffix;
     }
 }

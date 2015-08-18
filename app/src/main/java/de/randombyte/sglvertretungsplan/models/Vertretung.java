@@ -1,6 +1,12 @@
 package de.randombyte.sglvertretungsplan.models;
 
-public class Vertretung {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Vertretung implements Parcelable {
 
     private String zeitraum;
     private String klasse;
@@ -13,6 +19,18 @@ public class Vertretung {
     private String zusatzinfo;
 
     public Vertretung() {
+    }
+
+    private Vertretung(Parcel source) {
+        zeitraum = source.readString();
+        klasse = source.readString();
+        vertreter = source.readString();
+        statt = source.readString();
+        fach = source.readString();
+        raum = source.readString();
+        verlegung = source.readString();
+        art = source.readString();
+        zusatzinfo = source.readString();
     }
 
     public String getZeitraum() {
@@ -85,5 +103,56 @@ public class Vertretung {
 
     public void setZusatzinfo(String zusatzinfo) {
         this.zusatzinfo = zusatzinfo;
+    }
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Parcelable.Creator<Vertretung> CREATOR = new Creator<Vertretung>() {
+        @Override
+        public Vertretung createFromParcel(Parcel source) {
+            return new Vertretung(source);
+        }
+
+        @Override
+        public Vertretung[] newArray(int size) {
+            return new Vertretung[size];
+        }
+    };
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(zeitraum);
+        dest.writeString(klasse);
+        dest.writeString(vertreter);
+        dest.writeString(statt);
+        dest.writeString(fach);
+        dest.writeString(raum);
+        dest.writeString(verlegung);
+        dest.writeString(art);
+        dest.writeString(zusatzinfo);
+    }
+
+    public static List<Vertretung> getFiltered(List<Vertretung> vertretungList, Profile profile) {
+
+        List<Vertretung> filteredList = new ArrayList<>();
+
+        for (Vertretung vertretung : vertretungList) {
+            if (profile.isOberstufe()) {
+                for (Kurs kurs : profile.getKursList()) {
+                    if (vertretung.getFach().equalsIgnoreCase(kurs.toString())) {
+                        filteredList.add(vertretung);
+                    }
+                }
+
+            } else {
+                if (vertretung.getKlasse().equalsIgnoreCase(profile.toString())) {
+                    filteredList.add(vertretung);
+                }
+            }
+        }
+
+        return filteredList;
     }
 }

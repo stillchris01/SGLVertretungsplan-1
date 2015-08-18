@@ -13,8 +13,8 @@ public class Login {
     private static final String AUTH_ID_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/authid/";
     private static final String TIMETABLES_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/timetables/";
 
-    private final String username = "bla"; //Only for testing todo
-    private final String password = "blub";
+    private final String username = "z"; //Only for testing todo
+    private final String password = "z";
 
     public Login(String username, String password) {
         //this.username = username;

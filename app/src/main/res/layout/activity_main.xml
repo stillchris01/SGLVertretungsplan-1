@@ -24,21 +24,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view_pager"
-        android:layout_below="@id/tab_layout"
-        android:visibility="gone"/>
+        android:layout_below="@id/tab_layout" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Test load"
         android:id="@+id/testing_button"
-        android:layout_below="@id/tab_layout" />
+        android:layout_below="@id/view_pager" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/test_textview"
         android:layout_below="@id/testing_button"
-        android:textSize="16sp"/>
+        android:textSize="16sp" />
 
 </RelativeLayout>

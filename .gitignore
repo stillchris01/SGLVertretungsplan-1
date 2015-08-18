@@ -1,5 +1,5 @@
 .gradle
-/SGLVertretungsplan.iml
+*.iml
 /local.properties
 .DS_Store
 /build
