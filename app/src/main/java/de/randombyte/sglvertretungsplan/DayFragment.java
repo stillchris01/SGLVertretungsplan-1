@@ -21,7 +21,7 @@ public class DayFragment extends RoboFragment {
     public static final String ARGS_DAY = "args_day";
     public static final String ARGS_PROFILE = "args_profile";
 
-    @InjectView(R.id.date) TextView dateTest;
+    @InjectView(R.id.date) TextView date;
     @InjectView(R.id.recycler_view) RecyclerView recyclerView;
     @InjectView(R.id.day_empty) View dayEmptyView;
 
@@ -57,7 +57,7 @@ public class DayFragment extends RoboFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        dateTest.setText(day.getDayName());
+        date.setText(day.getDate());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);

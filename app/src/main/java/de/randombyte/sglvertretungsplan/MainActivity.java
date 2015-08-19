@@ -1,5 +1,8 @@
 package de.randombyte.sglvertretungsplan;
 
+import android.content.res.ColorStateList;
+import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
@@ -7,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -61,7 +65,9 @@ public class MainActivity extends RoboActionBarActivity {
         testProfile.setKursList(Arrays.asList(music, de));
         ProfileManager.save(PreferenceManager.getDefaultSharedPreferences(this), testProfile);
 
-        toolbar.setTitle("Testing mode");
+        TypedArray accentColor = obtainStyledAttributes(new TypedValue().data, new int[]{R.attr.colorAccent});
+        tabLayout.setTabTextColors(0xB3FFFFFF, accentColor.getColor(0, Color.WHITE)); //70% white
+        accentColor.recycle();
     }
 
     @Override
@@ -111,6 +117,7 @@ public class MainActivity extends RoboActionBarActivity {
 
         viewPager.setAdapter(dayPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+        toolbar.setTitle("Vertretungsplan - " + profile.toString());
     }
 
     public void onVertretungsplanDownloadError(@Observes VertretungsplanDownloadError event) {

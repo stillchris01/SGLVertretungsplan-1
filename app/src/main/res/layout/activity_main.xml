@@ -11,7 +11,8 @@
         android:layout_alignParentTop="true"
         android:fitsSystemWindows="true"
         android:minHeight="?attr/actionBarSize"
-        android:background="?attr/colorPrimary" />
+        android:background="?attr/colorPrimary"
+        android:title="@string/app_name" />
 
     <android.support.design.widget.TabLayout
         android:layout_width="match_parent"
