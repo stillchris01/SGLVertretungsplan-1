@@ -78,6 +78,6 @@ public class Kurs implements Parcelable {
 
     @Override
     public String toString() {
-        return isGrundkurs() ? "GK" : "LK" + String.format("%02d", nummer) + "-" + fach; //GK04-S0
+        return (isGrundkurs() ? "GK" : "LK") + String.format("%02d", nummer) + "-" + fach; //GK04-S0
     }
 }

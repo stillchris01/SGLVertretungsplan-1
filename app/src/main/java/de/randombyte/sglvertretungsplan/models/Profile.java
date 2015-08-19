@@ -7,7 +7,6 @@ import java.util.List;
 
 public class Profile implements Parcelable {
 
-    private int id;
     private boolean oberstufe;
     private String stufe;
     private String suffix;
@@ -17,19 +16,10 @@ public class Profile implements Parcelable {
     }
 
     private Profile(Parcel source) {
-        id = source.readInt();
         oberstufe = (boolean) source.readValue(null);
         stufe = source.readString();
         suffix = source.readString();
         source.readList(kursList, Kurs.class.getClassLoader());
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public boolean isOberstufe() {
@@ -82,7 +72,6 @@ public class Profile implements Parcelable {
     };
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeValue(oberstufe);
         dest.writeString(stufe);
         dest.writeString(suffix);

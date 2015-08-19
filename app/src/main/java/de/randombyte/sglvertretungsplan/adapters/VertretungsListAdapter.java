@@ -26,7 +26,7 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
         private View rootView;
         private TextView title;
         private TextView vertreter;
-        private TextView room;
+        private TextView raum;
         private TextView statt;
         private TextView fach;
 
@@ -35,7 +35,7 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
             rootView = itemView;
             title = (TextView) rootView.findViewById(R.id.title);
             vertreter = (TextView) rootView.findViewById(R.id.vertreter);
-            room = (TextView) rootView.findViewById(R.id.room);
+            raum = (TextView) rootView.findViewById(R.id.raum);
             statt = (TextView) rootView.findViewById(R.id.statt);
             fach = (TextView) rootView.findViewById(R.id.fach);
         }
@@ -61,8 +61,16 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
         ViewHolder viewHolder = (ViewHolder) holder;
         Vertretung vertretung = vertretungList.get(position);
 
-        viewHolder.title.setText(vertretung.getZeitraum() + " " + vertretung.getArt());
+        //todo: in future use databindings
+        viewHolder.title.setText((vertretung.getZeitraum().contains("-")
+                ? vertretung.getZeitraum()
+                : vertretung.getZeitraum() + ".") + " " + vertretung.getArt());
 
+        viewHolder.vertreter.setText("Vertreter: " + vertretung.getVertreter());
+        viewHolder.statt.setText("Statt: " + vertretung.getStatt());
+        viewHolder.fach.setText("Fach: " + vertretung.getFach());
+        viewHolder.raum.setText("Raum: " + vertretung.getRaum());
+        //todo: viewHolder.verlegung.setText(vertretung.getVerlegung());
     }
 
     @Override

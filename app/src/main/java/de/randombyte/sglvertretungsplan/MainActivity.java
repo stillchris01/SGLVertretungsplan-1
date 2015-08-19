@@ -22,7 +22,6 @@ import de.randombyte.sglvertretungsplan.events.VertretungsplanSaved;
 import de.randombyte.sglvertretungsplan.models.Kurs;
 import de.randombyte.sglvertretungsplan.models.Login;
 import de.randombyte.sglvertretungsplan.models.Profile;
-import de.randombyte.sglvertretungsplan.models.ProfileList;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
 import roboguice.activity.RoboActionBarActivity;
 import roboguice.event.EventManager;
@@ -49,18 +48,18 @@ public class MainActivity extends RoboActionBarActivity {
         //Setting test Profile
         Profile testProfile = new Profile();
         testProfile.setOberstufe(true);
-        testProfile.setId(0);
         testProfile.setStufe("EF");
         //testProfile.setSuffix("d"); //or c
-        Kurs kurs = new Kurs();
-        kurs.setGrundkurs(true);
-        kurs.setNummer(6);
-        kurs.setFach("MU");
-        testProfile.setKursList(Arrays.asList(kurs));
-        ProfileList profileList = new ProfileList();
-        profileList.setProfileList(Arrays.asList(testProfile));
-        profileList.setActiveProfileId(0);
-        ProfileManager.save(PreferenceManager.getDefaultSharedPreferences(this), profileList);
+        Kurs music = new Kurs();
+        music.setGrundkurs(true);
+        music.setNummer(6);
+        music.setFach("MU");
+        Kurs de = new Kurs();
+        de.setGrundkurs(true);
+        de.setNummer(7);
+        de.setFach("D");
+        testProfile.setKursList(Arrays.asList(music, de));
+        ProfileManager.save(PreferenceManager.getDefaultSharedPreferences(this), testProfile);
 
         toolbar.setTitle("Testing mode");
     }
@@ -97,8 +96,8 @@ public class MainActivity extends RoboActionBarActivity {
             throw new IllegalArgumentException("Vertretungsplan must not be null");
         }
 
-        Profile activeProfile = ProfileManager
-                .getActive(PreferenceManager.getDefaultSharedPreferences(this));
+        Profile profile = ProfileManager
+                .load(PreferenceManager.getDefaultSharedPreferences(this));
 
         PagerAdapter pagerAdapter = viewPager.getAdapter();
         DayPagerAdapter dayPagerAdapter; //todo: crappy?
@@ -107,7 +106,7 @@ public class MainActivity extends RoboActionBarActivity {
         } else {
             dayPagerAdapter = (DayPagerAdapter) pagerAdapter;
         }
-        dayPagerAdapter.setProfile(activeProfile);
+        dayPagerAdapter.setProfile(profile);
         dayPagerAdapter.setVertretungsplan(vertretungsplan);
 
         viewPager.setAdapter(dayPagerAdapter);
