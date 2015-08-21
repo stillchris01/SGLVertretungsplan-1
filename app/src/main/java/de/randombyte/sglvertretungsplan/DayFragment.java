@@ -21,9 +21,9 @@ public class DayFragment extends RoboFragment {
     public static final String ARGS_DAY = "args_day";
     public static final String ARGS_PROFILE = "args_profile";
 
-    @InjectView(R.id.date) TextView date;
-    @InjectView(R.id.recycler_view) RecyclerView recyclerView;
-    @InjectView(R.id.day_empty) View dayEmptyView;
+    private @InjectView(R.id.date) TextView date;
+    private @InjectView(R.id.recycler_view) RecyclerView recyclerView;
+    private @InjectView(R.id.day_empty) View dayEmptyView;
 
     private Day day;
     private Profile profile;

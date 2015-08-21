@@ -13,7 +13,7 @@ import de.randombyte.sglvertretungsplan.models.Vertretung;
 
 public class VertretungsListAdapter extends RecyclerView.Adapter {
 
-    private static final int EMPTY_VIEW = 10;
+    private static final int EMPTY_VIEW = 10; //todo: remove?
 
     private final List<Vertretung> vertretungList;
 

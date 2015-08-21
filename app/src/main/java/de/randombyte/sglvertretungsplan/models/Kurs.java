@@ -5,27 +5,31 @@ import android.os.Parcelable;
 
 public class Kurs implements Parcelable {
 
-    private int id;
+    private long creationTime;
     private boolean grundkurs;
     private int nummer;
     private String fach;
 
-    public Kurs() {
+    public Kurs(long creationTime, boolean grundkurs, int nummer, String fach) {
+        this.creationTime = creationTime;
+        this.grundkurs = grundkurs;
+        this.nummer = nummer;
+        this.fach = fach;
     }
 
     private Kurs(Parcel source) {
-        id = source.readInt();
+        creationTime = source.readLong();
         grundkurs = (boolean) source.readValue(null);
         nummer = source.readInt();
         fach = source.readString();
     }
 
-    public int getId() {
-        return id;
+    public long getCreationTime() {
+        return creationTime;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCreationTime(int creationTime) {
+        this.creationTime = creationTime;
     }
 
     public boolean isGrundkurs() {
@@ -70,7 +74,7 @@ public class Kurs implements Parcelable {
     };
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
+        dest.writeLong(creationTime);
         dest.writeValue(grundkurs);
         dest.writeInt(nummer);
         dest.writeString(fach);

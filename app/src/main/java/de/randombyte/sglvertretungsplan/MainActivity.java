@@ -1,23 +1,24 @@
 package de.randombyte.sglvertretungsplan;
 
-import android.content.res.ColorStateList;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
-import android.view.View;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.inject.Inject;
 
 import java.util.Arrays;
+import java.util.Calendar;
 
 import de.randombyte.sglvertretungsplan.adapters.DayPagerAdapter;
 import de.randombyte.sglvertretungsplan.events.TestButtonClicked;
@@ -38,12 +39,12 @@ public class MainActivity extends RoboActionBarActivity {
 
     @Inject EventManager eventManager;
 
-    @InjectView(R.id.toolbar) Toolbar toolbar;
-    @InjectView(R.id.tab_layout) TabLayout tabLayout;
-    @InjectView(R.id.view_pager) ViewPager viewPager;
+    private @InjectView(R.id.toolbar) Toolbar toolbar;
+    private @InjectView(R.id.tab_layout) TabLayout tabLayout;
+    private @InjectView(R.id.view_pager) ViewPager viewPager;
 
-    @InjectView(R.id.testing_button) Button button;
-    @InjectView(R.id.test_textview) TextView textView;
+    private @InjectView(R.id.testing_button) Button button;
+    private @InjectView(R.id.test_textview) TextView textView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,20 +55,17 @@ public class MainActivity extends RoboActionBarActivity {
         testProfile.setOberstufe(true);
         testProfile.setStufe("EF");
         //testProfile.setSuffix("d"); //or c
-        Kurs music = new Kurs();
-        music.setGrundkurs(true);
-        music.setNummer(6);
-        music.setFach("MU");
-        Kurs de = new Kurs();
-        de.setGrundkurs(true);
-        de.setNummer(7);
-        de.setFach("D");
+        long timeInMillis = Calendar.getInstance().getTimeInMillis();
+        Kurs music = new Kurs(timeInMillis, true, 6, "MU");
+        Kurs de = new Kurs(timeInMillis + 1, true, 7 ,"D");
         testProfile.setKursList(Arrays.asList(music, de));
         ProfileManager.save(PreferenceManager.getDefaultSharedPreferences(this), testProfile);
 
         TypedArray accentColor = obtainStyledAttributes(new TypedValue().data, new int[]{R.attr.colorAccent});
         tabLayout.setTabTextColors(0xB3FFFFFF, accentColor.getColor(0, Color.WHITE)); //70% white
         accentColor.recycle();
+
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -96,7 +94,6 @@ public class MainActivity extends RoboActionBarActivity {
         textView.setText(text);*/
     }
 
-
     public void showVertretungsplan(Vertretungsplan vertretungsplan) {
         if (vertretungsplan == null) {
             throw new IllegalArgumentException("Vertretungsplan must not be null");
@@ -122,5 +119,24 @@ public class MainActivity extends RoboActionBarActivity {
 
     public void onVertretungsplanDownloadError(@Observes VertretungsplanDownloadError event) {
         textView.setText("Error:\n" + event.getException().getMessage());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_announcments:
+                return true;
+            case R.id.action_settings:
+                startActivity(new Intent(this, EditProfileActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 }

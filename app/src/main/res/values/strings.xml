@@ -1,3 +1,24 @@
 <resources>
     <string name="app_name">SGL Vertretungsplan</string>
+
+    <string-array name="spinner_klasse_entries">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+        <item>E</item>
+        <item>F</item>
+    </string-array>
+
+    <string-array name="spinner_stufe_entries">
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+        <item>EF</item>
+        <item>Q1</item>
+        <item>Q2</item>
+    </string-array>
 </resources>
