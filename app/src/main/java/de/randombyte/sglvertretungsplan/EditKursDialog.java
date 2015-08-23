@@ -3,12 +3,14 @@ package de.randombyte.sglvertretungsplan;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AppCompatDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -22,25 +24,106 @@ import de.randombyte.sglvertretungsplan.models.Kurs;
  * Using normal DialogFragment because I want to use the onCreateDialog(),
  * injection doesn't work with it, so it would be useless to extend from RoboGuice
  */
-public class EditKursDialog extends DialogFragment {
+public class EditKursDialog {
 
     public static final String TAG = "editKursDialog";
     public static final String ARGS_KURS = "args_kurs";
 
     public static final int REQUEST_CODE_GET_KURS = 10;
 
-    public static EditKursDialog newInstance(Kurs kurs) {
+    public AppCompatDialog get(Context context, Kurs kurs) {
 
-        Bundle args = new Bundle();
-        args.putParcelable(ARGS_KURS, kurs);
+        View rootView = LayoutInflater.from(context)
+                .inflate(R.layout.dialog_edit_kurs, null, false);
 
-        EditKursDialog fragment = new EditKursDialog();
-        fragment.setArguments(args);
+        //Views
+        final TextInputLayout numberInputLayout =
+                (TextInputLayout) rootView.findViewById(R.id.number_text_input_layout);
+        final TextInputLayout fachInputLayout =
+                (TextInputLayout) rootView.findViewById(R.id.fach_text_input_layout);
+        final RadioButton gkRadio = (RadioButton) rootView.findViewById(R.id.grundkurs_radio);
+        RadioButton lkRadio = (RadioButton) rootView.findViewById(R.id.leistungskurs_radio);
 
-        return fragment;
+        int number = kurs.getNummer();
+
+        //Number
+        numberInputLayout.getEditText().setText(
+                number < 0 ?
+                        "" :
+                        String.valueOf(kurs.getNummer()));
+        final TextWatcher numberTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                numberInputLayout.setError(s.length() == 0 ? "Kursnummer eingeben!" : "");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        numberInputLayout.getEditText().addTextChangedListener(numberTextWatcher);
+
+        //Fach
+        fachInputLayout.getEditText().setText(kurs.getFach());
+        final TextWatcher fachTextWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                fachInputLayout.setError(s.length() == 0 ? "Fach eingeben!" : "");
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        };
+        fachInputLayout.getEditText().addTextChangedListener(fachTextWatcher);
+
+        boolean isGrundkurs = kurs.isGrundkurs();
+        gkRadio.setChecked(isGrundkurs);
+        lkRadio.setChecked(!isGrundkurs);
+
+        AppCompatDialog dialog = new AppCompatDialog(context);
+        dialog.setContentView(rootView);
+        dialog.setOnDismissListener(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        String numberText = numberInputLayout.getEditText().getText().toString();
+                        String fachText = fachInputLayout.getEditText().getText().toString();
+
+                        //todo: Good?
+                        if (numberText.isEmpty() || fachText.isEmpty()) {
+                            numberTextWatcher.onTextChanged(numberText, 0, 0, 0);
+                            fachTextWatcher.onTextChanged(fachText, 0, 0, 0);
+                            return; //Dialog stays open
+                        }
+
+                        kurs.setGrundkurs(gkRadio.isChecked());
+                        kurs.setNummer(Integer.parseInt(numberText));
+                        kurs.setFach(fachText.toUpperCase());
+
+                        Intent intentWithKursData = new Intent();
+                        intentWithKursData.putExtra(ARGS_KURS, kurs);
+
+                        getTargetFragment().onActivityResult(REQUEST_CODE_GET_KURS,
+                                Activity.RESULT_OK, intentWithKursData);
+                        dialog.dismiss();
+                    }
+                });
     }
 
-    @NonNull
+    /*@NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
 
@@ -135,5 +218,5 @@ public class EditKursDialog extends DialogFragment {
                     }
                 })
                 .create();
-    }
+    }*/
 }

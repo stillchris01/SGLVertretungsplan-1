@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
@@ -12,35 +14,41 @@
         android:fitsSystemWindows="true"
         android:minHeight="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:title="Profil bearbeiten" />
+        android:title="Profil bearbeiten"
+        app:popupTheme="@style/Theme.AppCompat.Light.NoActionBar"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <TextView
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/stufe_text_hint"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/toolbar"
         android:layout_marginTop="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
-        android:text="Stufe: "
-        android:textSize="16sp"/>
+        android:orientation="horizontal">
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/spinner_stufe"
-        android:layout_below="@id/toolbar"
-        android:layout_toRightOf="@id/stufe_text_hint"
-        android:layout_toEndOf="@id/stufe_text_hint"
-        android:layout_marginTop="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:entries="@array/spinner_stufe_entries"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stufe_text_hint"
+            android:text="Stufe: "
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead" />
+
+        <Spinner
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinner_stufe"
+            android:layout_marginLeft="16dp"
+            android:layout_marginStart="16dp"
+            android:entries="@array/spinner_stufe_entries" />
+
+    </LinearLayout>
 
     <de.randombyte.sglvertretungsplan.customviews.NonSwipeableViewPager
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/view_pager"
-        android:layout_below="@id/spinner_stufe" />
+        android:layout_marginTop="16dp" />
 
-</RelativeLayout>
+</LinearLayout>

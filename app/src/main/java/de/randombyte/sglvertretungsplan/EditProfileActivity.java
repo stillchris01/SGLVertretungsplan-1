@@ -25,6 +25,7 @@ public class EditProfileActivity extends RoboActionBarActivity {
     private  @InjectView(R.id.view_pager) NonSwipeableViewPager viewPager;
 
     private Profile profile;
+    String[] stufeList;
 
     @Override
     protected void onResume() {
@@ -39,13 +40,20 @@ public class EditProfileActivity extends RoboActionBarActivity {
 
         setSupportActionBar(toolbar);
 
+        stufeList = getResources().getStringArray(R.array.spinner_stufe_entries);
+
         profile = ProfileManager.load(PreferenceManager.getDefaultSharedPreferences(this));
 
         spinnerStufe.setSelection(stufeToSpinnerPos(this, profile.getStufe()));
         spinnerStufe.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                profile.setStufe(getResources().getStringArray(R.array.spinner_stufe_entries)[position]);
+                if (position >= stufeList.length - 1 - 3) { //EF, Q1, Q2 -> Oberstufe
+                    viewPager.setCurrentItem(1);
+                } else {
+                    viewPager.setCurrentItem(0);
+                }
+                profile.setStufe(stufeList[position]);
             }
 
             @Override
