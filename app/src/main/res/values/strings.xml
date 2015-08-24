@@ -9,7 +9,6 @@
         <item>E</item>
         <item>F</item>
     </string-array>
-
     <string-array name="spinner_stufe_entries">
         <item>5</item>
         <item>6</item>
@@ -20,5 +19,47 @@
         <item>EF</item>
         <item>Q1</item>
         <item>Q2</item>
+    </string-array>
+
+    <string-array name="gk_lk_switcher_entries">
+        <item>GK</item>
+        <item>LK</item>
+    </string-array>
+    <string-array name="kurs_nummer_switcher_entries">
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+    </string-array>
+    <string-array name="fach_switcher_entries">
+        <item>D</item>
+        <item>M</item>
+        <item>E</item>
+        <item>F</item>
+        <item>L</item>
+        <item>S0</item>
+        <item>SP</item>
+        <item>IF</item>
+        <item>PH</item>
+        <item>BI</item>
+        <item>CH</item>
+        <item>KU</item>
+        <item>MU</item>
+        <item>ER</item>
+        <item>PL</item>
+        <item>GE</item>
+        <item>SW</item>
+        <item>EK</item>
+        <item>vE</item>
+        <item>vM</item>
     </string-array>
 </resources>

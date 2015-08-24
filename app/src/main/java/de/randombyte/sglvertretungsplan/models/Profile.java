@@ -3,6 +3,7 @@ package de.randombyte.sglvertretungsplan.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Profile implements Parcelable {
@@ -10,7 +11,7 @@ public class Profile implements Parcelable {
     private boolean oberstufe;
     private String stufe;
     private String suffix;
-    private List<Kurs> kursList;
+    private List<Kurs> kursList = new ArrayList<>();
 
     public Profile() {
     }

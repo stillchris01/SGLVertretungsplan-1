@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +18,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import de.randombyte.sglvertretungsplan.EditKursDialog;
+import de.randombyte.sglvertretungsplan.NewEditKursDialog;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.adapters.KursListAdapter;
 import de.randombyte.sglvertretungsplan.events.KursClickEvent;
+import de.randombyte.sglvertretungsplan.events.KursDeleteEvent;
 import de.randombyte.sglvertretungsplan.models.Kurs;
 import roboguice.RoboGuice;
 import roboguice.event.EventManager;
@@ -68,36 +70,44 @@ public class EditKursListFragment extends RoboFragment {
 
         KursListAdapter kursListAdapter = new KursListAdapter(kursList);
         RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(kursListAdapter); //For EventManager
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(kursListAdapter);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showKursDialog(new Kurs(Calendar.getInstance().getTimeInMillis(), true, -1, ""));
+                showKursDialog(new Kurs(Calendar.getInstance().getTimeInMillis(), true, 1, "D")); //todo: rather give null instead of mock Kurs?
             }
         });
     }
 
     public void onKursClick(@Observes KursClickEvent event) {
-        for (Kurs kurs : kursList) {
-            if (kurs.getCreationTime() == event.getCreationDate()) {
-                showKursDialog(kurs);
-                return;
-            }
-        }
+        showKursDialog(findKursByCreationTime(event.getCreationDate()));
+    }
+
+    public void onKursDelete(@Observes KursDeleteEvent event) {
+        int index = kursList.indexOf(findKursByCreationTime(event.getCreationDate()));
+        kursList.remove(index);
+        KursListAdapter adapter = (KursListAdapter) recyclerView.getAdapter();
+        adapter.setKursList(kursList);
+        adapter.notifyItemRemoved(index);
     }
 
     private void showKursDialog(Kurs kurs) {
-        EditKursDialog editKursDialog = EditKursDialog.newInstance(kurs);
-        editKursDialog.setTargetFragment(this, EditKursDialog.REQUEST_CODE_GET_KURS);
-        editKursDialog.show(getChildFragmentManager(), EditKursDialog.TAG);
+        NewEditKursDialog editKursDialog = NewEditKursDialog.newInstance(kurs);
+        editKursDialog.setTargetFragment(this, NewEditKursDialog.REQUEST_CODE_GET_KURS);
+        editKursDialog.show(getChildFragmentManager(), NewEditKursDialog.TAG);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == EditKursDialog.REQUEST_CODE_GET_KURS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == NewEditKursDialog.REQUEST_CODE_GET_KURS && resultCode == Activity.RESULT_OK) {
 
-            Kurs kurs = data.getParcelableExtra(EditKursDialog.ARGS_KURS);
+            Kurs kurs = data.getParcelableExtra(NewEditKursDialog.ARGS_KURS);
 
             int posOfKurs = -1;
             for (Kurs tempKurs : kursList) {
@@ -112,8 +122,20 @@ public class EditKursListFragment extends RoboFragment {
                 recyclerView.getAdapter().notifyItemChanged(posOfKurs);
             } else {
                 kursList.add(kurs);
-                recyclerView.getAdapter().notifyItemInserted(kursList.size() -1);
+                KursListAdapter adapter = (KursListAdapter) recyclerView.getAdapter();
+                adapter.setKursList(kursList);
+                adapter.notifyItemInserted(kursList.size() - 1);
             }
         }
+    }
+
+    private Kurs findKursByCreationTime(long creationTime) {
+        for (Kurs kurs : kursList) {
+            if (kurs.getCreationTime() == creationTime) {
+                return kurs;
+            }
+        }
+
+        throw new IllegalArgumentException("Invalid creationTime!");
     }
 }

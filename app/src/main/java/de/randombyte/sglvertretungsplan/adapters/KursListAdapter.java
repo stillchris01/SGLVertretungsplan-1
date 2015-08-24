@@ -12,6 +12,7 @@ import java.util.List;
 
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.KursClickEvent;
+import de.randombyte.sglvertretungsplan.events.KursDeleteEvent;
 import de.randombyte.sglvertretungsplan.models.Kurs;
 import roboguice.event.EventManager;
 
@@ -32,13 +33,23 @@ public class KursListAdapter extends RecyclerView.Adapter<KursListAdapter.ViewHo
 
         public View rootView;
         public TextView textView;
+        public View deletButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             rootView = itemView;
             textView = (TextView) itemView.findViewById(R.id.text_view);
+            deletButton = rootView.findViewById(R.id.delete_button);
         }
+    }
+
+    public List<Kurs> getKursList() {
+        return kursList;
+    }
+
+    public void setKursList(List<Kurs> kursList) {
+        this.kursList = kursList;
     }
 
     @Override
@@ -52,10 +63,16 @@ public class KursListAdapter extends RecyclerView.Adapter<KursListAdapter.ViewHo
 
         final long creationTime = kursList.get(position).getCreationTime();
         holder.textView.setText(kursList.get(position).toString());
-        holder.rootView.setOnClickListener(new View.OnClickListener() {
+        holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 eventManager.fire(new KursClickEvent(creationTime));
+            }
+        });
+        holder.deletButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventManager.fire(new KursDeleteEvent(creationTime));
             }
         });
     }

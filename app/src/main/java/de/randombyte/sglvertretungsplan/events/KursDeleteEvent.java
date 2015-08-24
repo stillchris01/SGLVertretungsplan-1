@@ -1,11 +1,11 @@
 package de.randombyte.sglvertretungsplan.events;
 
-public class KursClickEvent {
+public class KursDeleteEvent {
 
     private final long creationDate; //Good for identifying a Kurs
 
-    public KursClickEvent(long kurs) {
-        this.creationDate = kurs;
+    public KursDeleteEvent(long creationDate) {
+        this.creationDate = creationDate;
     }
 
     public long getCreationDate() {
