@@ -4,6 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
+import org.jetbrains.annotations.NotNull;
+
 import de.randombyte.sglvertretungsplan.DayFragment;
 import de.randombyte.sglvertretungsplan.models.Profile;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
@@ -20,11 +22,11 @@ public class DayPagerAdapter extends FragmentPagerAdapter {
         super(fm);
     }
 
-    public void setVertretungsplan(Vertretungsplan vertretungsplan) {
+    public void setVertretungsplan(@NotNull Vertretungsplan vertretungsplan) {
         this.vertretungsplan = vertretungsplan;
     }
 
-    public void setProfile(Profile profile) {
+    public void setProfile(@NotNull Profile profile) {
         this.profile = profile;
     }
 
