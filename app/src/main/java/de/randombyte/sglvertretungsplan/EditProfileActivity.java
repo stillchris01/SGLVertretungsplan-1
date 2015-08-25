@@ -12,8 +12,10 @@ import java.util.Arrays;
 
 import de.randombyte.sglvertretungsplan.adapters.ProfilePagerAdapter;
 import de.randombyte.sglvertretungsplan.customviews.NonSwipeableViewPager;
+import de.randombyte.sglvertretungsplan.events.KursListUpdatedEvent;
 import de.randombyte.sglvertretungsplan.models.Profile;
 import roboguice.activity.RoboActionBarActivity;
+import roboguice.event.Observes;
 import roboguice.inject.ContentView;
 import roboguice.inject.InjectView;
 
@@ -25,7 +27,7 @@ public class EditProfileActivity extends RoboActionBarActivity {
     private  @InjectView(R.id.view_pager) NonSwipeableViewPager viewPager;
 
     private Profile profile;
-    String[] stufeList;
+    private String[] stufeList;
 
     @Override
     protected void onResume() {
@@ -44,6 +46,8 @@ public class EditProfileActivity extends RoboActionBarActivity {
 
         profile = ProfileManager.load(PreferenceManager.getDefaultSharedPreferences(this));
 
+        viewPager.setAdapter(new ProfilePagerAdapter(getSupportFragmentManager(), profile));
+
         spinnerStufe.setSelection(stufeToSpinnerPos(this, profile.getStufe()));
         spinnerStufe.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -61,8 +65,10 @@ public class EditProfileActivity extends RoboActionBarActivity {
 
             }
         });
+    }
 
-        viewPager.setAdapter(new ProfilePagerAdapter(getSupportFragmentManager(), profile));
+    public void onKursListUpdated(@Observes KursListUpdatedEvent event) {
+        profile.setKursList(event.getKursList());
     }
 
     @Override

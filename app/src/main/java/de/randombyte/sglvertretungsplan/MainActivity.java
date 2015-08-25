@@ -65,7 +65,6 @@ public class MainActivity extends RoboActionBarActivity {
 
         Profile profile = ProfileManager
                 .load(PreferenceManager.getDefaultSharedPreferences(this));
-
         if (profile == null) {
             //todo: should never happen
             new AlertDialog.Builder(this).setMessage("Profil in den Einstellungen erstellen!").create().show();
@@ -73,7 +72,7 @@ public class MainActivity extends RoboActionBarActivity {
         }
 
         PagerAdapter pagerAdapter = viewPager.getAdapter();
-        DayPagerAdapter dayPagerAdapter; //todo: crappy?
+        DayPagerAdapter dayPagerAdapter;
         if (pagerAdapter == null) {
             dayPagerAdapter = new DayPagerAdapter(getSupportFragmentManager());
         } else {

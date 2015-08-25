@@ -23,6 +23,7 @@ import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.adapters.KursListAdapter;
 import de.randombyte.sglvertretungsplan.events.KursClickEvent;
 import de.randombyte.sglvertretungsplan.events.KursDeleteEvent;
+import de.randombyte.sglvertretungsplan.events.KursListUpdatedEvent;
 import de.randombyte.sglvertretungsplan.models.Kurs;
 import roboguice.RoboGuice;
 import roboguice.event.EventManager;
@@ -94,6 +95,9 @@ public class EditKursListFragment extends RoboFragment {
         KursListAdapter adapter = (KursListAdapter) recyclerView.getAdapter();
         adapter.setKursList(kursList);
         adapter.notifyItemRemoved(index);
+
+        //Give list to activity to save it in onPause
+        eventManager.fire(new KursListUpdatedEvent(kursList));
     }
 
     private void showKursDialog(Kurs kurs) {
@@ -126,6 +130,9 @@ public class EditKursListFragment extends RoboFragment {
                 adapter.setKursList(kursList);
                 adapter.notifyItemInserted(kursList.size() - 1);
             }
+
+            //Give list to activity to save it in onPause
+            eventManager.fire(new KursListUpdatedEvent(kursList));
         }
     }
 

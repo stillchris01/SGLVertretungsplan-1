@@ -2,7 +2,7 @@ package de.randombyte.sglvertretungsplan.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -11,9 +11,9 @@ import de.randombyte.sglvertretungsplan.models.Profile;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
 
 /**
- * For ViewPager
+ * For ViewPager, using FragmentStatePagerAdapter so it destroys the fragments when notifyDataSetChanged() is called
  */
-public class DayPagerAdapter extends FragmentPagerAdapter {
+public class DayPagerAdapter extends FragmentStatePagerAdapter {
 
     private Vertretungsplan vertretungsplan;
     private Profile profile;
@@ -33,6 +33,11 @@ public class DayPagerAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         return DayFragment.newInstance(vertretungsplan.getDays().get(position), profile);
+    }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE; //To force recreation with setAdapter() or notifyDataSetChanged()
     }
 
     @Override
