@@ -11,6 +11,8 @@ import org.roboguice.shaded.goole.common.collect.Lists;
 
 import java.util.List;
 
+import javax.security.auth.login.LoginException;
+
 import de.randombyte.sglvertretungsplan.models.Day;
 import de.randombyte.sglvertretungsplan.models.Login;
 import de.randombyte.sglvertretungsplan.models.TimetableInfo;
@@ -37,6 +39,9 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
 
         for (TimetableInfo timetableInfo : login.loadLinks()) {
             Log.d("urls", timetableInfo.getUrl());
+            if (Login.isBadLink(timetableInfo.getUrl())) {
+                throw new LoginException("Service returned NoContent! Assuming bad credentials");
+            }
 
             Day day = new Day();
 

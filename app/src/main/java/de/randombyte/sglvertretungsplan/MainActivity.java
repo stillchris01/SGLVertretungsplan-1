@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.inject.Inject;
 
@@ -21,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 import de.randombyte.sglvertretungsplan.adapters.DayPagerAdapter;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadError;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanSaved;
-import de.randombyte.sglvertretungsplan.models.Login;
 import de.randombyte.sglvertretungsplan.models.Profile;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
 import roboguice.activity.RoboActionBarActivity;
@@ -54,7 +54,8 @@ public class MainActivity extends RoboActionBarActivity {
     protected void onResume() {
         super.onResume();
 
-        VertretungsplanManager.downloadAndSave(this, new Login("bla", "blub"), eventManager);
+        VertretungsplanManager.downloadAndSave(this,
+                LoginManager.load(PreferenceManager.getDefaultSharedPreferences(this)), eventManager);
     }
 
     public void onVertretungsplanSaved(@Observes VertretungsplanSaved event) {
@@ -83,11 +84,20 @@ public class MainActivity extends RoboActionBarActivity {
 
         viewPager.setAdapter(dayPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
+
+        hideVertretungsplanViews(false);
+
         toolbar.setTitle("Vertretungsplan - " + profile.toString());
     }
 
     public void onVertretungsplanDownloadError(@Observes VertretungsplanDownloadError event) {
-        //todo
+        hideVertretungsplanViews(true);
+        new AlertDialog.Builder(this).setMessage("Server akzeptiert Logindaten nicht!").create().show();
+    }
+
+    private void hideVertretungsplanViews(boolean hide) {
+        viewPager.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
+        tabLayout.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
     }
 
     @Override
@@ -102,7 +112,7 @@ public class MainActivity extends RoboActionBarActivity {
             case R.id.action_announcments:
                 return true;
             case R.id.action_settings:
-                startActivity(new Intent(this, EditProfileActivity.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

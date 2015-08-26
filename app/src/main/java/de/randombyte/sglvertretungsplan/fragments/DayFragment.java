@@ -1,4 +1,4 @@
-package de.randombyte.sglvertretungsplan;
+package de.randombyte.sglvertretungsplan.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.adapters.VertretungsListAdapter;
 import de.randombyte.sglvertretungsplan.models.Day;
 import de.randombyte.sglvertretungsplan.models.Profile;

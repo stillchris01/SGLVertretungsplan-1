@@ -4,9 +4,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import de.randombyte.sglvertretungsplan.profile_fragments.ChooseKlasseFragment;
+import de.randombyte.sglvertretungsplan.fragments.profile_fragments.ChooseKlasseFragment;
 import de.randombyte.sglvertretungsplan.models.Profile;
-import de.randombyte.sglvertretungsplan.profile_fragments.EditKursListFragment;
+import de.randombyte.sglvertretungsplan.fragments.profile_fragments.EditKursListFragment;
 
 /**
  * Contains the fragment for selecting a "Stufe" or a list of "Kurs"

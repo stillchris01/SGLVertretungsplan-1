@@ -1,4 +1,4 @@
-package de.randombyte.sglvertretungsplan.profile_fragments;
+package de.randombyte.sglvertretungsplan.fragments.profile_fragments;
 
 import android.app.Activity;
 import android.content.Intent;

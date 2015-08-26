@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 import org.jetbrains.annotations.NotNull;
 
-import de.randombyte.sglvertretungsplan.DayFragment;
+import de.randombyte.sglvertretungsplan.fragments.DayFragment;
 import de.randombyte.sglvertretungsplan.models.Profile;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
 
