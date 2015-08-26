@@ -14,8 +14,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".SettingsActivity" android:parentActivityName=".MainActivity" />
+        <activity android:name=".EditProfileActivity" android:parentActivityName=".SettingsActivity" />
 
     </application>
 

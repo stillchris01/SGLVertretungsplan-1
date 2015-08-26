@@ -15,6 +15,7 @@ public class SettingsActivity extends RoboActionBarActivity {
         setContentView(R.layout.settings_activity);
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SettingsFragment settingsFragment = new SettingsFragment();
         RoboGuice.getInjector(this).injectMembersWithoutViews(settingsFragment);

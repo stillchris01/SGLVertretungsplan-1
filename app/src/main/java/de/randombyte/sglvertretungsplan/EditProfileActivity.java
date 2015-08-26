@@ -41,6 +41,7 @@ public class EditProfileActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
 
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         stufeList = getResources().getStringArray(R.array.spinner_stufe_entries);
 
