@@ -21,6 +21,16 @@ public class ProfileManager {
     }
 
     public static @Nullable Profile load(SharedPreferences sharedPreferences) {
-        return new Gson().fromJson(sharedPreferences.getString(PREF_PROFLE, ""), Profile.class);
+
+        Profile profile = new Gson().fromJson(sharedPreferences.getString(PREF_PROFLE, ""), Profile.class);
+
+        if (profile == null) {
+            profile = new Profile();
+            profile.setStufe("9");
+            profile.setSuffix("a");
+            profile.setOberstufe(false);
+        }
+
+        return profile;
     }
 }
