@@ -9,12 +9,14 @@ public class Kurs implements Parcelable {
     private boolean grundkurs;
     private int nummer;
     private String fach;
+    private String optionalLehrer;
 
-    public Kurs(long creationTime, boolean grundkurs, int nummer, String fach) {
+    public Kurs(long creationTime, boolean grundkurs, int nummer, String fach, String optionalLehrer) {
         this.creationTime = creationTime;
         this.grundkurs = grundkurs;
         this.nummer = nummer;
         this.fach = fach;
+        this.optionalLehrer = optionalLehrer;
     }
 
     private Kurs(Parcel source) {
@@ -22,6 +24,7 @@ public class Kurs implements Parcelable {
         grundkurs = (boolean) source.readValue(null);
         nummer = source.readInt();
         fach = source.readString();
+        optionalLehrer = source.readString();
     }
 
     public long getCreationTime() {
@@ -56,6 +59,14 @@ public class Kurs implements Parcelable {
         this.fach = fach;
     }
 
+    public String getOptionalLehrer() {
+        return optionalLehrer;
+    }
+
+    public void setOptionalLehrer(String optionalLehrer) {
+        this.optionalLehrer = optionalLehrer;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,10 +89,15 @@ public class Kurs implements Parcelable {
         dest.writeValue(grundkurs);
         dest.writeInt(nummer);
         dest.writeString(fach);
+        dest.writeString(optionalLehrer);
     }
 
     @Override
     public String toString() {
         return (isGrundkurs() ? "GK" : "LK") + String.format("%02d", nummer) + "-" + fach; //GK04-S0
+    }
+
+    public String toStringDoppelblockung() {
+        return toString() + (optionalLehrer != null && !optionalLehrer.isEmpty() ? "(" + optionalLehrer + ")" : ""); //GK04-S0(ROB)
     }
 }

@@ -80,7 +80,7 @@ public class EditKursListFragment extends RoboFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showKursDialog(new Kurs(Calendar.getInstance().getTimeInMillis(), true, 1, "D")); //todo: rather give null instead of mock Kurs?
+                showKursDialog(new Kurs(Calendar.getInstance().getTimeInMillis(), true, 1, "D", "")); //todo: rather give null instead of mock Kurs?
             }
         });
     }

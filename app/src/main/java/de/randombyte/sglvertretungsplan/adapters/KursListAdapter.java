@@ -62,7 +62,7 @@ public class KursListAdapter extends RecyclerView.Adapter<KursListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         final long creationTime = kursList.get(position).getCreationTime();
-        holder.textView.setText(kursList.get(position).toString());
+        holder.textView.setText(kursList.get(position).toStringDoppelblockung());
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

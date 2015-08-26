@@ -2,15 +2,8 @@ package de.randombyte.sglvertretungsplan.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import de.randombyte.sglvertretungsplan.SetList;
 
@@ -186,7 +179,15 @@ public class Vertretung implements Parcelable {
                 if (profile.getStufe().equalsIgnoreCase(vertretung.getKlasse())) { //e.g. Q1
                     for (Kurs kurs : profile.getKursList()) {
                         if (vertretung.getFach().equalsIgnoreCase(kurs.toString())) { //e.g. GK06-MU
-                            filterResult.add(vertretung);
+                            if (kurs.getOptionalLehrer() != null && !kurs.getOptionalLehrer().isEmpty()) {
+                                if (vertretung.getStatt().equalsIgnoreCase(kurs.getOptionalLehrer())) {
+                                    //OptionalLehrer specified and "Kurs" matches it
+                                    filterResult.add(vertretung);
+                                }
+                            } else {
+                                //OptionalLehrer not specified -> show every "Kurs" in "Kursband"
+                                filterResult.add(vertretung);
+                            }
                         }
                     }
                 }

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.EditText;
 
 import java.util.Arrays;
 
@@ -52,11 +53,13 @@ public class NewEditKursDialog extends DialogFragment {
         final VerticalSwitcher kursNummerSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.kurs_nummer_switcher);
         final VerticalSwitcher gkLkSwicther = (VerticalSwitcher) rootView.findViewById(R.id.gk_lk_switcher);
         final VerticalSwitcher fachSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.fach_switcher);
+        final EditText optionalLehrer = (EditText) rootView.findViewById(R.id.optional_lehrer);
 
         kursNummerSwitcher.setIndex(kurs.getNummer() -1); //hacky
         gkLkSwicther.setIndex(kurs.isGrundkurs() ? 0 : 1); //hacky
         fachSwitcher.setIndex(
                 Arrays.asList(fachSwitcher.getEntries()).indexOf(kurs.getFach())); //more hacky :/
+        optionalLehrer.setText(kurs.getOptionalLehrer());
 
         return new AlertDialog.Builder(getActivity())
                 .setView(rootView)
@@ -67,6 +70,7 @@ public class NewEditKursDialog extends DialogFragment {
                         kurs.setGrundkurs(gkLkSwicther.getIndex() == 0); //First entry is GK
                         kurs.setNummer(Integer.parseInt(kursNummerSwitcher.getSelectedEntry()));
                         kurs.setFach(fachSwitcher.getSelectedEntry().toUpperCase());
+                        kurs.setOptionalLehrer(optionalLehrer.getEditableText().toString().toUpperCase());
 
                         Intent intentWithKursData = new Intent();
                         intentWithKursData.putExtra(ARGS_KURS, kurs);

@@ -1,48 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:layout_margin="16dp"
-    android:gravity="center_horizontal">
+    android:padding="16dp">
 
-    <de.randombyte.sglvertretungsplan.customviews.VerticalSwitcher
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/gk_lk_switcher"
-        android:textSize="6sp"
-        android:layout_gravity="center_vertical"
-        app:entries="@array/gk_lk_switcher_entries" />
+        android:id="@+id/switcher_container"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_alignParentTop="true">
 
-    <de.randombyte.sglvertretungsplan.customviews.VerticalSwitcher
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/kurs_nummer_switcher"
-        android:textSize="6sp"
-        android:layout_gravity="center_vertical"
-        app:entries="@array/kurs_nummer_switcher_entries"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp" />
+        <de.randombyte.sglvertretungsplan.customviews.VerticalSwitcher
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/gk_lk_switcher"
+            android:textSize="6sp"
+            android:layout_gravity="center_vertical"
+            app:entries="@array/gk_lk_switcher_entries" />
+
+        <de.randombyte.sglvertretungsplan.customviews.VerticalSwitcher
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/kurs_nummer_switcher"
+            android:textSize="6sp"
+            android:layout_gravity="center_vertical"
+            app:entries="@array/kurs_nummer_switcher_entries"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="-"
+            android:textSize="40sp"
+            android:gravity="center_vertical"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp"/>
+
+        <de.randombyte.sglvertretungsplan.customviews.VerticalSwitcher
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/fach_switcher"
+            android:textSize="6sp"
+            android:layout_gravity="center_vertical"
+            app:entries="@array/fach_switcher_entries"
+            android:layout_marginLeft="12dp"
+            android:layout_marginStart="12dp" />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:text="-"
-        android:textSize="40sp"
-        android:gravity="center_vertical"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp"/>
-
-    <de.randombyte.sglvertretungsplan.customviews.VerticalSwitcher
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/fach_switcher"
-        android:textSize="6sp"
-        android:layout_gravity="center_vertical"
-        app:entries="@array/fach_switcher_entries"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp" />
+        android:layout_below="@id/switcher_container"
+        android:text="Opt. Lehrerkürzel(Doppelblockungen):"
+        android:id="@+id/optional_lehrer_hint"
+        android:layout_marginTop="32dp"/>
 
-</LinearLayout>
+    <EditText
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:singleLine="true"
+        android:inputType="textCapCharacters"
+        android:id="@+id/optional_lehrer"
+        android:layout_toRightOf="@id/optional_lehrer_hint"
+        android:layout_below="@id/switcher_container"
+        android:layout_alignBaseline="@id/optional_lehrer_hint"/>
+
+</RelativeLayout>

@@ -5,7 +5,7 @@
         <item name="colorAccent">@color/amber</item>
     </style>
     
-    <style name="CollapsingTextHintAppearance" parent="TextAppearance.Design.Hint">
-        <item name="android:textColor">@color/amberDark</item>
+    <style name="DarkCollapsingTextHintAppearance" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/teal</item>
     </style>
 </resources>
