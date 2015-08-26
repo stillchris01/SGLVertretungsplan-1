@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:key="prefs_login" android:title="Login" />
+    <Preference android:key="prefs_profile" android:title="Profil einstellen">
+        <intent
+            android:action="ANDROID.INTENT.ACTION.VIEW"
+            android:targetPackage="de.randombyte.sglvertretungsplan"
+            android:targetClass="de.randombyte.sglvertretungsplan.EditProfileActivity"/>
+    </Preference>
+    <Preference android:key="prefs_login" android:title="Logindaten ändern" />
 </PreferenceScreen>
