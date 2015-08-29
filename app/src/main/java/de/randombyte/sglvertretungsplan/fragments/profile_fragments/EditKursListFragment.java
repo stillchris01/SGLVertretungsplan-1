@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import de.randombyte.sglvertretungsplan.NewEditKursDialog;
+import de.randombyte.sglvertretungsplan.EditKursDialog;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.adapters.KursListAdapter;
 import de.randombyte.sglvertretungsplan.events.KursClickEvent;
@@ -88,17 +88,17 @@ public class EditKursListFragment extends RoboFragment {
     }
 
     private void showKursDialog(Kurs kurs) {
-        NewEditKursDialog editKursDialog = NewEditKursDialog.newInstance(kurs);
-        editKursDialog.setTargetFragment(this, NewEditKursDialog.REQUEST_CODE_GET_KURS);
-        editKursDialog.show(getChildFragmentManager(), NewEditKursDialog.TAG);
+        EditKursDialog editKursDialog = EditKursDialog.newInstance(kurs);
+        editKursDialog.setTargetFragment(this, EditKursDialog.REQUEST_CODE_GET_KURS);
+        editKursDialog.show(getChildFragmentManager(), EditKursDialog.TAG);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if (requestCode == NewEditKursDialog.REQUEST_CODE_GET_KURS && resultCode == Activity.RESULT_OK) {
+        if (requestCode == EditKursDialog.REQUEST_CODE_GET_KURS && resultCode == Activity.RESULT_OK) {
 
-            Kurs kurs = data.getParcelableExtra(NewEditKursDialog.ARGS_KURS);
+            Kurs kurs = data.getParcelableExtra(EditKursDialog.ARGS_KURS);
 
             KursListAdapter adapter = (KursListAdapter) recyclerView.getAdapter();
             adapter.addOrUpdate(kurs);

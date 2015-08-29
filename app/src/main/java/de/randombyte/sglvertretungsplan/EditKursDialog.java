@@ -22,19 +22,19 @@ import de.randombyte.sglvertretungsplan.models.Kurs;
  * Using normal DialogFragment because I want to use the onCreateDialog(),
  * injection doesn't work with it, so it would be useless to extend from RoboGuice
  */
-public class NewEditKursDialog extends DialogFragment {
+public class EditKursDialog extends DialogFragment {
 
     public static final String TAG = "editKursDialog";
     public static final String ARGS_KURS = "args_kurs";
 
     public static final int REQUEST_CODE_GET_KURS = 10;
 
-    public static NewEditKursDialog newInstance(Kurs kurs) {
+    public static EditKursDialog newInstance(Kurs kurs) {
 
         Bundle args = new Bundle();
         args.putParcelable(ARGS_KURS, kurs);
 
-        NewEditKursDialog fragment = new NewEditKursDialog();
+        EditKursDialog fragment = new EditKursDialog();
         fragment.setArguments(args);
 
         return fragment;
