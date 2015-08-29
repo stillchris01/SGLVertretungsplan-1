@@ -1,14 +1,16 @@
 package de.randombyte.sglvertretungsplan.events;
 
+import de.randombyte.sglvertretungsplan.models.Kurs;
+
 public class KursClickEvent {
 
-    private final long creationDate; //Good for identifying a Kurs
+    private final Kurs kurs;
 
-    public KursClickEvent(long kurs) {
-        this.creationDate = kurs;
+    public KursClickEvent(Kurs kurs) {
+        this.kurs = kurs;
     }
 
-    public long getCreationDate() {
-        return creationDate;
+    public Kurs getKurs() {
+        return kurs;
     }
 }

@@ -22,8 +22,6 @@ import de.randombyte.sglvertretungsplan.NewEditKursDialog;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.adapters.KursListAdapter;
 import de.randombyte.sglvertretungsplan.events.KursClickEvent;
-import de.randombyte.sglvertretungsplan.events.KursDeleteEvent;
-import de.randombyte.sglvertretungsplan.events.KursListUpdatedEvent;
 import de.randombyte.sglvertretungsplan.models.Kurs;
 import roboguice.RoboGuice;
 import roboguice.event.EventManager;
@@ -86,18 +84,7 @@ public class EditKursListFragment extends RoboFragment {
     }
 
     public void onKursClick(@Observes KursClickEvent event) {
-        showKursDialog(findKursByCreationTime(event.getCreationDate()));
-    }
-
-    public void onKursDelete(@Observes KursDeleteEvent event) {
-        int index = kursList.indexOf(findKursByCreationTime(event.getCreationDate()));
-        kursList.remove(index);
-        KursListAdapter adapter = (KursListAdapter) recyclerView.getAdapter();
-        adapter.setKursList(kursList);
-        adapter.notifyItemRemoved(index);
-
-        //Give list to activity to save it in onPause
-        eventManager.fire(new KursListUpdatedEvent(kursList));
+        showKursDialog(event.getKurs());
     }
 
     private void showKursDialog(Kurs kurs) {
@@ -113,36 +100,8 @@ public class EditKursListFragment extends RoboFragment {
 
             Kurs kurs = data.getParcelableExtra(NewEditKursDialog.ARGS_KURS);
 
-            int posOfKurs = -1;
-            for (Kurs tempKurs : kursList) {
-                if (tempKurs.getCreationTime() == kurs.getCreationTime()) {
-                    posOfKurs = kursList.indexOf(kurs);
-                }
-            }
-
-            if (posOfKurs != -1) {
-                kursList.remove(posOfKurs);
-                kursList.add(posOfKurs, kurs);
-                recyclerView.getAdapter().notifyItemChanged(posOfKurs);
-            } else {
-                kursList.add(kurs);
-                KursListAdapter adapter = (KursListAdapter) recyclerView.getAdapter();
-                adapter.setKursList(kursList);
-                adapter.notifyItemInserted(kursList.size() - 1);
-            }
-
-            //Give list to activity to save it in onPause
-            eventManager.fire(new KursListUpdatedEvent(kursList));
+            KursListAdapter adapter = (KursListAdapter) recyclerView.getAdapter();
+            adapter.addOrUpdate(kurs);
         }
-    }
-
-    private Kurs findKursByCreationTime(long creationTime) {
-        for (Kurs kurs : kursList) {
-            if (kurs.getCreationTime() == creationTime) {
-                return kurs;
-            }
-        }
-
-        throw new IllegalArgumentException("Invalid creationTime!");
     }
 }

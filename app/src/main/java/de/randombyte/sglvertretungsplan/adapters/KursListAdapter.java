@@ -12,8 +12,10 @@ import java.util.List;
 
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.KursClickEvent;
-import de.randombyte.sglvertretungsplan.events.KursDeleteEvent;
+import de.randombyte.sglvertretungsplan.events.KursListUpdatedEvent;
 import de.randombyte.sglvertretungsplan.models.Kurs;
+import de.randombyte.sglvertretungsplan.sortedlist.SortedList;
+import de.randombyte.sglvertretungsplan.sortedlist.SortedListAdapterCallback;
 import roboguice.event.EventManager;
 
 public class KursListAdapter extends RecyclerView.Adapter<KursListAdapter.ViewHolder> {
@@ -22,10 +24,33 @@ public class KursListAdapter extends RecyclerView.Adapter<KursListAdapter.ViewHo
 
     private @Inject EventManager eventManager;
 
-    private List<Kurs> kursList;
+    class KursSortedListCallback extends SortedListAdapterCallback<Kurs> {
+
+        public KursSortedListCallback(RecyclerView.Adapter adapter) {
+            super(adapter);
+        }
+
+        @Override
+        public int compare(Kurs o1, Kurs o2) {
+            return o1.compareTo(o2);
+        }
+
+        @Override
+        public boolean areContentsTheSame(Kurs oldItem, Kurs newItem) {
+            return oldItem.equals(newItem);
+        }
+
+        @Override
+        public boolean areItemsTheSame(Kurs item1, Kurs item2) {
+            return item1.getCreationTime() == item2.getCreationTime();
+        }
+    }
+
+    //Like a boss!
+    private SortedList<Kurs> kursList = new SortedList<Kurs>(Kurs.class, new KursSortedListCallback(this));
 
     public KursListAdapter(List<Kurs> kursList) {
-        this.kursList = kursList;
+        this.kursList.addAll(kursList);
         setHasStableIds(true);
     }
 
@@ -33,23 +58,25 @@ public class KursListAdapter extends RecyclerView.Adapter<KursListAdapter.ViewHo
 
         public View rootView;
         public TextView textView;
-        public View deletButton;
+        public View deleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);
 
             rootView = itemView;
             textView = (TextView) itemView.findViewById(R.id.text_view);
-            deletButton = rootView.findViewById(R.id.delete_button);
+            deleteButton = rootView.findViewById(R.id.delete_button);
         }
     }
 
-    public List<Kurs> getKursList() {
-        return kursList;
-    }
-
-    public void setKursList(List<Kurs> kursList) {
-        this.kursList = kursList;
+    public void addOrUpdate(Kurs kurs) {
+        int i = kursList.myIndexOf(kurs);
+        if (i == SortedList.INVALID_POSITION) {
+            kursList.add(kurs);
+        } else {
+            kursList.updateItemAt(i, kurs);
+        }
+        eventManager.fire(new KursListUpdatedEvent(kursList.getData()));
     }
 
     @Override
@@ -61,18 +88,19 @@ public class KursListAdapter extends RecyclerView.Adapter<KursListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        final long creationTime = kursList.get(position).getCreationTime();
+        final Kurs kurs = kursList.get(position);
         holder.textView.setText(kursList.get(position).toStringDoppelblockung());
         holder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventManager.fire(new KursClickEvent(creationTime));
+                eventManager.fire(new KursClickEvent(kurs));
             }
         });
-        holder.deletButton.setOnClickListener(new View.OnClickListener() {
+        holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                eventManager.fire(new KursDeleteEvent(creationTime));
+                kursList.remove(kurs);
+                eventManager.fire(new KursListUpdatedEvent(kursList.getData()));
             }
         });
     }

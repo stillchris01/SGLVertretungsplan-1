@@ -67,13 +67,19 @@ public class NewEditKursDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        kurs.setGrundkurs(gkLkSwicther.getIndex() == 0); //First entry is GK
+                        Kurs newKurs = new Kurs(kurs.getCreationTime(),
+                                gkLkSwicther.getIndex() == 0,
+                                Integer.parseInt(kursNummerSwitcher.getSelectedEntry()),
+                                fachSwitcher.getSelectedEntry().toUpperCase(),
+                                optionalLehrer.getEditableText().toString().toUpperCase());
+
+                        /*kurs.setGrundkurs(gkLkSwicther.getIndex() == 0); //First entry is GK
                         kurs.setNummer(Integer.parseInt(kursNummerSwitcher.getSelectedEntry()));
                         kurs.setFach(fachSwitcher.getSelectedEntry().toUpperCase());
-                        kurs.setOptionalLehrer(optionalLehrer.getEditableText().toString().toUpperCase());
+                        kurs.setOptionalLehrer(optionalLehrer.getEditableText().toString().toUpperCase());*/
 
                         Intent intentWithKursData = new Intent();
-                        intentWithKursData.putExtra(ARGS_KURS, kurs);
+                        intentWithKursData.putExtra(ARGS_KURS, newKurs);
 
                         getTargetFragment().onActivityResult(REQUEST_CODE_GET_KURS,
                                 Activity.RESULT_OK, intentWithKursData);

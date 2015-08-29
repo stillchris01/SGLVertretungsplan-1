@@ -2,10 +2,11 @@ package de.randombyte.sglvertretungsplan.models;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 
-public class Kurs implements Parcelable {
+public class Kurs implements Parcelable, Comparable<Kurs> {
 
-    private long creationTime;
+    private final long creationTime;
     private boolean grundkurs;
     private int nummer;
     private String fach;
@@ -29,10 +30,6 @@ public class Kurs implements Parcelable {
 
     public long getCreationTime() {
         return creationTime;
-    }
-
-    public void setCreationTime(int creationTime) {
-        this.creationTime = creationTime;
     }
 
     public boolean isGrundkurs() {
@@ -99,5 +96,29 @@ public class Kurs implements Parcelable {
 
     public String toStringDoppelblockung() {
         return toString() + (optionalLehrer != null && !optionalLehrer.isEmpty() ? "(" + optionalLehrer + ")" : ""); //GK04-S0(ROB)
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o != null && o instanceof Kurs) {
+            Kurs kurs = (Kurs) o;
+            return creationTime == kurs.getCreationTime() &&
+                    grundkurs == kurs.isGrundkurs() &&
+                    nummer == kurs.getNummer() &&
+                    fach.equalsIgnoreCase(kurs.getFach()) &&
+                    (optionalLehrer == null ? kurs.getOptionalLehrer() == null :
+                        optionalLehrer.equalsIgnoreCase(kurs.getOptionalLehrer())
+                    );
+        }
+
+        return false;
+    }
+
+    /**
+     * For ordering list of "Kurs"
+     */
+    @Override
+    public int compareTo(@NonNull Kurs another) {
+        return nummer - another.getNummer(); //GK2 is less than GK4: 2-4=-2
     }
 }
