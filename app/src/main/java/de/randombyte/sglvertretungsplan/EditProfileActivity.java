@@ -53,13 +53,11 @@ public class EditProfileActivity extends RoboActionBarActivity {
         spinnerStufe.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position >= stufeList.length - 1 - 3) { //EF, Q1, Q2 -> Oberstufe
-                    viewPager.setCurrentItem(1);
-                } else {
-                    viewPager.setCurrentItem(0);
-                }
                 profile.setStufe(stufeList[position]);
-                profile.setOberstufe(!profile.getStufe().matches("\\d+")); //Unterstufe is only numeric 5-10
+                // Oberstufe is not numeric(EF, Q1, Q2)
+                boolean oberstufe = !profile.getStufe().matches("\\d+");
+                profile.setOberstufe(oberstufe);
+                viewPager.setCurrentItem(oberstufe ? 1 : 0);
             }
 
             @Override

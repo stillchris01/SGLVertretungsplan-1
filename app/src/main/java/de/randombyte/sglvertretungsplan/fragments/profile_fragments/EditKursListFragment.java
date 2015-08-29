@@ -90,7 +90,12 @@ public class EditKursListFragment extends RoboFragment {
     private void showKursDialog(Kurs kurs) {
         EditKursDialog editKursDialog = EditKursDialog.newInstance(kurs);
         editKursDialog.setTargetFragment(this, EditKursDialog.REQUEST_CODE_GET_KURS);
-        editKursDialog.show(getChildFragmentManager(), EditKursDialog.TAG);
+        // Using normal getFragmentManager() because in recreation FragmentManager looks for
+        // EditKursDialog's targetFragment in itself and not the ChildFragmentManager of
+        // the TargetFragment(EditKursListFragment).
+        // So you have to place the Dialog in that FragmentManager, too.
+        // Source: https://code.google.com/p/android/issues/detail?id=54520#c6
+        editKursDialog.show(getFragmentManager(), EditKursDialog.TAG);
     }
 
     @Override

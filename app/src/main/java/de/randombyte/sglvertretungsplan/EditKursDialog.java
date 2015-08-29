@@ -29,6 +29,12 @@ public class EditKursDialog extends DialogFragment {
 
     public static final int REQUEST_CODE_GET_KURS = 10;
 
+    private Kurs kurs;
+    private VerticalSwitcher kursNummerSwitcher;
+    private VerticalSwitcher gkLkSwicther;
+    private VerticalSwitcher fachSwitcher;
+    private EditText optionalLehrer;
+
     public static EditKursDialog newInstance(Kurs kurs) {
 
         Bundle args = new Bundle();
@@ -40,6 +46,19 @@ public class EditKursDialog extends DialogFragment {
         return fragment;
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null) {
+            // recreation
+            kurs = savedInstanceState.getParcelable(ARGS_KURS);
+        } else {
+            // from intent
+            kurs = getArguments().getParcelable(ARGS_KURS);
+        }
+    }
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -47,13 +66,11 @@ public class EditKursDialog extends DialogFragment {
         View rootView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_edit_kurs, null, false);
 
-        final Kurs kurs = getArguments().getParcelable(ARGS_KURS);
-
         //Views
-        final VerticalSwitcher kursNummerSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.kurs_nummer_switcher);
-        final VerticalSwitcher gkLkSwicther = (VerticalSwitcher) rootView.findViewById(R.id.gk_lk_switcher);
-        final VerticalSwitcher fachSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.fach_switcher);
-        final EditText optionalLehrer = (EditText) rootView.findViewById(R.id.optional_lehrer);
+        kursNummerSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.kurs_nummer_switcher);
+        gkLkSwicther = (VerticalSwitcher) rootView.findViewById(R.id.gk_lk_switcher);
+        fachSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.fach_switcher);
+        optionalLehrer = (EditText) rootView.findViewById(R.id.optional_lehrer);
 
         kursNummerSwitcher.setIndex(kurs.getNummer() -1); //hacky
         gkLkSwicther.setIndex(kurs.isGrundkurs() ? 0 : 1); //hacky
@@ -67,19 +84,8 @@ public class EditKursDialog extends DialogFragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
-                        Kurs newKurs = new Kurs(kurs.getCreationTime(),
-                                gkLkSwicther.getIndex() == 0,
-                                Integer.parseInt(kursNummerSwitcher.getSelectedEntry()),
-                                fachSwitcher.getSelectedEntry().toUpperCase(),
-                                optionalLehrer.getEditableText().toString().toUpperCase());
-
-                        /*kurs.setGrundkurs(gkLkSwicther.getIndex() == 0); //First entry is GK
-                        kurs.setNummer(Integer.parseInt(kursNummerSwitcher.getSelectedEntry()));
-                        kurs.setFach(fachSwitcher.getSelectedEntry().toUpperCase());
-                        kurs.setOptionalLehrer(optionalLehrer.getEditableText().toString().toUpperCase());*/
-
                         Intent intentWithKursData = new Intent();
-                        intentWithKursData.putExtra(ARGS_KURS, newKurs);
+                        intentWithKursData.putExtra(ARGS_KURS, constructKurs());
 
                         getTargetFragment().onActivityResult(REQUEST_CODE_GET_KURS,
                                 Activity.RESULT_OK, intentWithKursData);
@@ -87,5 +93,20 @@ public class EditKursDialog extends DialogFragment {
                     }
                 })
                 .create();
+    }
+
+    private Kurs constructKurs() {
+        kurs.setGrundkurs(gkLkSwicther.getIndex() == 0); //First entry is GK
+        kurs.setNummer(Integer.parseInt(kursNummerSwitcher.getSelectedEntry()));
+        kurs.setFach(fachSwitcher.getSelectedEntry().toUpperCase());
+        kurs.setOptionalLehrer(optionalLehrer.getEditableText().toString().toUpperCase());
+        return kurs;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putParcelable(ARGS_KURS, constructKurs());
     }
 }
