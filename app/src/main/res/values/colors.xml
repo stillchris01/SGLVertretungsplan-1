@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="teal">#009688</color>
-    <color name="tealDark">#00796B</color>
-    <color name="amber">#FFC400</color>
-    <color name="amberDark">#FFC400</color>
+    <color name="blue">#2196F3</color>
+    <color name="blueDark">#1976D2</color>
+    <color name="pinkAccent200">#FF4081</color>
 </resources>

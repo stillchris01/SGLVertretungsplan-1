@@ -1,11 +1,7 @@
 <resources>
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/teal</item>
-        <item name="colorPrimaryDark">@color/tealDark</item>
-        <item name="colorAccent">@color/amber</item>
-    </style>
-    
-    <style name="DarkCollapsingTextHintAppearance" parent="TextAppearance.Design.Hint">
-        <item name="android:textColor">@color/teal</item>
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/blueDark</item>
+        <item name="colorAccent">@color/pinkAccent200</item>
     </style>
 </resources>

@@ -47,7 +47,7 @@ public class MainActivity extends RoboActionBarActivity {
         super.onCreate(savedInstanceState);
 
         TypedArray accentColor = obtainStyledAttributes(new TypedValue().data, new int[]{R.attr.colorAccent});
-        tabLayout.setTabTextColors(0xB3FFFFFF, accentColor.getColor(0, Color.WHITE)); //70% white
+        tabLayout.setTabTextColors(0xB3FFFFFF, /*accentColor.getColor(0, */Color.WHITE/*)*/); //70% white
         accentColor.recycle();
 
         setSupportActionBar(toolbar);
