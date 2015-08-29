@@ -46,14 +46,23 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
             Day day = new Day();
 
             Document vertretungsplanDoc = Jsoup.connect(timetableInfo.getUrl()).get();
-            day.setMotd(vertretungsplanDoc.select("tr.info").last().text());
+
+            //Motd
+            Element motd = vertretungsplanDoc.select("tr.info").last();
+            if (motd != null) {
+                day.setMotd(motd.text());
+            }
+
+            //Timestamp
             day.setTimestamp(
                     vertretungsplanDoc.select("table.mon_head").first().text().split("Stand: ")[1]);
 
+            //Date
             String[] dateSplits = vertretungsplanDoc.select("div.mon_title").first().text().split(" ");
             day.setDate(dateSplits[0]);
             day.setDayName(dateSplits[1].replace(",", ""));
 
+            //Every row with data
             Elements rows = vertretungsplanDoc.select("td.list:not(.inline_header)");//Whitout "5a ..." row
 
             for (List<Element> elements : Lists.partition(rows, COLUMNS_COUNT)) {
@@ -70,7 +79,6 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
                 day.getVertretungList().add(vertretung);
             }
 
-            //todo: save motd in new day
             vertretungsplan.getDays().add(day);
         }
 

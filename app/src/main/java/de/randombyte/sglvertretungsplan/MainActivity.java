@@ -14,10 +14,13 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.inject.Inject;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.security.auth.login.LoginException;
 
 import de.randombyte.sglvertretungsplan.adapters.DayPagerAdapter;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadError;
@@ -92,7 +95,11 @@ public class MainActivity extends RoboActionBarActivity {
 
     public void onVertretungsplanDownloadError(@Observes VertretungsplanDownloadError event) {
         hideVertretungsplanViews(true);
-        new AlertDialog.Builder(this).setMessage("Server akzeptiert Logindaten nicht!").create().show();
+        if (event.getException() instanceof LoginException) {
+            new AlertDialog.Builder(this).setMessage("Server akzeptiert Logindaten nicht!").create().show();
+        } else {
+            Toast.makeText(this, "Fehler!", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void hideVertretungsplanViews(boolean hide) {
