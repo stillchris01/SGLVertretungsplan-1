@@ -59,6 +59,7 @@ public class EditProfileActivity extends RoboActionBarActivity {
                     viewPager.setCurrentItem(0);
                 }
                 profile.setStufe(stufeList[position]);
+                profile.setOberstufe(!profile.getStufe().matches("\\d+")); //Unterstufe is only numeric 5-10
             }
 
             @Override
