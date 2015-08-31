@@ -5,8 +5,14 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Day implements Parcelable { //Parcelable for transport from Activity to DayFragment
+
+    public static final long URL_TIMEOUT = TimeUnit.MINUTES.toMillis(10); // After this timeout the url could be invalid
+
+    private TimetableInfo timetableInfo;
+    private long downloadedTimeStamp;
 
     private String timestamp;
     private String date;
@@ -18,11 +24,29 @@ public class Day implements Parcelable { //Parcelable for transport from Activit
     }
 
     private Day(Parcel source) {
+        timetableInfo = source.readParcelable(TimetableInfo.class.getClassLoader());
+        downloadedTimeStamp = source.readLong();
         timestamp = source.readString();
         date = source.readString();
         dayName = source.readString();
         motd = source.readString();
         source.readList(vertretungList, Vertretung.class.getClassLoader());
+    }
+
+    public TimetableInfo getTimetableInfo() {
+        return timetableInfo;
+    }
+
+    public void setTimetableInfo(TimetableInfo timetableInfo) {
+        this.timetableInfo = timetableInfo;
+    }
+
+    public long getDownloadedTimeStamp() {
+        return downloadedTimeStamp;
+    }
+
+    public void setDownloadedTimeStamp(long downloadedTimeStamp) {
+        this.downloadedTimeStamp = downloadedTimeStamp;
     }
 
     public String getTimestamp() {
@@ -83,6 +107,8 @@ public class Day implements Parcelable { //Parcelable for transport from Activit
     };
 
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(timetableInfo, 0);
+        dest.writeLong(downloadedTimeStamp);
         dest.writeString(timestamp);
         dest.writeString(date);
         dest.writeString(dayName);

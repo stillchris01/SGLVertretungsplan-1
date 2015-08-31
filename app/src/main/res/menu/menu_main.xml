@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="Mitteilungen" android:id="@+id/action_announcments" />
-    <item android:title="Einstellungen" android:id="@+id/action_settings" />
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="Mitteilungen"
+        android:id="@+id/action_announcments"
+        android:orderInCategory="200"/>
+    <item
+        android:title="Einstellungen"
+        android:id="@+id/action_settings"
+        android:orderInCategory="300"/>
 </menu>

@@ -9,6 +9,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.security.auth.login.LoginException;
@@ -44,6 +45,8 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
             }
 
             Day day = new Day();
+            day.setDownloadedTimeStamp(Calendar.getInstance().getTimeInMillis());
+            day.setTimetableInfo(timetableInfo);
 
             Document vertretungsplanDoc = Jsoup.connect(timetableInfo.getUrl()).get();
 

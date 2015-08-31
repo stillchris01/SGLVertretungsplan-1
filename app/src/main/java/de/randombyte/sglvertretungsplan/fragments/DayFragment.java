@@ -1,13 +1,21 @@
 package de.randombyte.sglvertretungsplan.fragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.Calendar;
 
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.adapters.VertretungsListAdapter;
@@ -44,6 +52,8 @@ public class DayFragment extends RoboFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setHasOptionsMenu(true);
+
         day = (Day) getArguments().get(ARGS_DAY);
         profile = (Profile) getArguments().get(ARGS_PROFILE);
     }
@@ -72,5 +82,33 @@ public class DayFragment extends RoboFragment {
     private void setDayEmpty(boolean empty) {
         recyclerView.setVisibility(empty ? View.GONE : View.VISIBLE);
         dayEmptyView.setVisibility(empty ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.menu_day_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.action_open_in_browser:
+                if (day.getDownloadedTimeStamp() + Day.URL_TIMEOUT >
+                        Calendar.getInstance().getTimeInMillis()) {
+                    //Should be valid
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setData(Uri.parse(day.getTimetableInfo().getUrl()));
+                    startActivity(intent);
+                } else {
+                    Toast.makeText(getActivity(), "Bitte Vertretungsplan zuerst neu laden!",
+                            Toast.LENGTH_LONG).show();
+                }
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
