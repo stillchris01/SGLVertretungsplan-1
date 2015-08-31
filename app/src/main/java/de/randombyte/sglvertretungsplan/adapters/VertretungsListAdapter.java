@@ -1,5 +1,6 @@
 package de.randombyte.sglvertretungsplan.adapters;
 
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import de.randombyte.sglvertretungsplan.R;
+import de.randombyte.sglvertretungsplan.models.Art;
 import de.randombyte.sglvertretungsplan.models.Vertretung;
 
 public class VertretungsListAdapter extends RecyclerView.Adapter {
@@ -71,6 +73,22 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
         viewHolder.fach.setText("Fach: " + vertretung.getFach());
         viewHolder.raum.setText("Raum: " + vertretung.getRaum());
         //todo: viewHolder.verlegung.setText(vertretung.getVerlegung());
+
+        //Strikethroughs
+        Art art = vertretung.parseArt();
+        switch (art) {
+            case ENTFALL:
+                viewHolder.vertreter.setPaintFlags(viewHolder.vertreter.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                viewHolder.fach.setPaintFlags(viewHolder.fach.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            case TROTZ_ABSENZ:
+            case VERTRETUNG:
+            case STATT_VERTRETUNG:
+            case EIGENVERANTWORTLICHES_ARBEITEN:
+            case BETREUUNG:
+            case LEHRERTAUSCH:
+                viewHolder.statt.setPaintFlags(viewHolder.statt.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                break;
+        }
     }
 
     @Override

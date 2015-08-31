@@ -98,6 +98,10 @@ public class Vertretung implements Parcelable {
         this.art = art;
     }
 
+    public Art parseArt() {
+        return Art.fromString(art);
+    }
+
     public String getZusatzinfo() {
         return zusatzinfo;
     }
