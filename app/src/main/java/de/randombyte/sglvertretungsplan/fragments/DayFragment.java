@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -16,8 +17,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Calendar;
+import java.util.List;
 
 import de.randombyte.sglvertretungsplan.R;
+import de.randombyte.sglvertretungsplan.VertretungShareTextWriter;
 import de.randombyte.sglvertretungsplan.adapters.VertretungsListAdapter;
 import de.randombyte.sglvertretungsplan.models.Day;
 import de.randombyte.sglvertretungsplan.models.Profile;
@@ -32,6 +35,7 @@ public class DayFragment extends RoboFragment {
 
     private @InjectView(R.id.date) TextView date;
     private @InjectView(R.id.recycler_view) RecyclerView recyclerView;
+    private @InjectView(R.id.fab) FloatingActionButton shareFab;
     private @InjectView(R.id.day_empty) View dayEmptyView;
 
     private Day day;
@@ -69,12 +73,25 @@ public class DayFragment extends RoboFragment {
         super.onViewCreated(view, savedInstanceState);
 
         date.setText(day.getDate());
+        final List<Vertretung> filteredVertretungList =
+                Vertretung.getFiltered(day.getVertretungList(), profile);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new VertretungsListAdapter(
-                Vertretung.getFiltered(day.getVertretungList(), profile)));
+        recyclerView.setAdapter(new VertretungsListAdapter(filteredVertretungList));
+
+        shareFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareVertretungTextIntent = new Intent(Intent.ACTION_SEND);
+                shareVertretungTextIntent.setType("text/plain");
+                shareVertretungTextIntent.putExtra(Intent.EXTRA_TEXT,
+                        VertretungShareTextWriter.write(filteredVertretungList, day.getDayName(),
+                                profile, new StringBuilder()).toString());
+                startActivity(shareVertretungTextIntent);
+            }
+        });
 
         setDayEmpty(day.getVertretungList().size() == 0);
     }
