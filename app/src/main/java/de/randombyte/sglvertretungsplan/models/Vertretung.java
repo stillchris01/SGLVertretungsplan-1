@@ -196,7 +196,7 @@ public class Vertretung implements Parcelable {
                     }
                 }
             } else {
-                if (vertretung.getKlasse().equalsIgnoreCase(profile.toString())) {
+                if (vertretung.getKlasse().toLowerCase().contains(profile.toString().toLowerCase())) {
                     filterResult.add(vertretung);
                 }
             }
