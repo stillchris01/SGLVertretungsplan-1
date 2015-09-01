@@ -60,7 +60,7 @@ public class ChooseKlasseFragment extends RoboFragment {
         klasseSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                eventManager.fire(new KlasseChooseEvent(parent.getSelectedItem().toString())); //e.g. "C"
+                eventManager.fire(new KlasseChooseEvent(parent.getSelectedItem().toString().toLowerCase())); //e.g. "C"
             }
 
             @Override
@@ -71,7 +71,9 @@ public class ChooseKlasseFragment extends RoboFragment {
     }
 
     private static int klasseToSpinnerPos(Context context, String klasse) {
+        // Suffix saved and displayed in MainActivity as lower case
+        // Displayed in ChooseKlasseFragment as upper case, looks better, I think
         return Arrays.asList(context.getResources().getStringArray(R.array.spinner_klasse_entries))
-                .indexOf(klasse);
+                .indexOf(klasse.toUpperCase());
     }
 }

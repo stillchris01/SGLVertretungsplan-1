@@ -12,6 +12,7 @@ import java.util.Arrays;
 
 import de.randombyte.sglvertretungsplan.adapters.ProfilePagerAdapter;
 import de.randombyte.sglvertretungsplan.customviews.NonSwipeableViewPager;
+import de.randombyte.sglvertretungsplan.events.KlasseChooseEvent;
 import de.randombyte.sglvertretungsplan.events.KursListUpdatedEvent;
 import de.randombyte.sglvertretungsplan.models.Profile;
 import roboguice.activity.RoboActionBarActivity;
@@ -65,6 +66,10 @@ public class EditProfileActivity extends RoboActionBarActivity {
 
             }
         });
+    }
+
+    public void onKlasseChosen(@Observes KlasseChooseEvent event) {
+        profile.setSuffix(event.getKlasse());
     }
 
     public void onKursListUpdated(@Observes KursListUpdatedEvent event) {
