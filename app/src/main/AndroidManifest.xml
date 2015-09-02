@@ -15,6 +15,7 @@
         </activity>
 
         <activity android:name=".SettingsActivity" android:parentActivityName=".MainActivity" />
+        <activity android:name=".AnnouncementsActivity" android:parentActivityName=".MainActivity" />
         <activity android:name=".EditProfileActivity" android:parentActivityName=".SettingsActivity" />
 
     </application>
