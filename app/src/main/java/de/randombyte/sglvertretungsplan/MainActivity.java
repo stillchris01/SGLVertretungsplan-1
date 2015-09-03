@@ -14,6 +14,7 @@ import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.inject.Inject;
@@ -24,7 +25,8 @@ import javax.security.auth.login.LoginException;
 
 import de.randombyte.sglvertretungsplan.adapters.DayPagerAdapter;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadError;
-import de.randombyte.sglvertretungsplan.events.VertretungsplanSaved;
+import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadStartedEvent;
+import de.randombyte.sglvertretungsplan.events.VertretungsplanSavedEvent;
 import de.randombyte.sglvertretungsplan.models.Profile;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
 import roboguice.activity.RoboActionBarActivity;
@@ -41,6 +43,7 @@ public class MainActivity extends RoboActionBarActivity {
     private @InjectView(R.id.toolbar) Toolbar toolbar;
     private @InjectView(R.id.tab_layout) TabLayout tabLayout;
     private @InjectView(R.id.view_pager) ViewPager viewPager;
+    private @InjectView(R.id.progress) ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,8 @@ public class MainActivity extends RoboActionBarActivity {
         TypedArray accentColor = obtainStyledAttributes(new TypedValue().data, new int[]{R.attr.colorAccent});
         tabLayout.setTabTextColors(0xB3FFFFFF, /*accentColor.getColor(0, */Color.WHITE/*)*/); //70% white
         accentColor.recycle();
+
+        progressBar.setIndeterminate(true);
 
         setSupportActionBar(toolbar);
     }
@@ -61,12 +66,24 @@ public class MainActivity extends RoboActionBarActivity {
                 LoginManager.load(PreferenceManager.getDefaultSharedPreferences(this)), eventManager);
     }
 
-    public void onVertretungsplanSaved(@Observes VertretungsplanSaved event) {
+    public void onDownloadStarted(@Observes VertretungsplanDownloadStartedEvent event) {
+        setUiState(UI_STATE.LOADING);
+    }
+
+    public void onVertretungsplanDownloadError(@Observes VertretungsplanDownloadError event) {
+        setUiState(UI_STATE.INTERNET_ERROR);
+        if (event.getException() instanceof LoginException) {
+            new AlertDialog.Builder(this).setMessage("Server akzeptiert Logindaten nicht!").create().show();
+        } else {
+            Toast.makeText(this, "Fehler!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public void onVertretungsplanSaved(@Observes VertretungsplanSavedEvent event) {
         showVertretungsplan(event.getVertretungsplan());
     }
 
     public void showVertretungsplan(@NotNull Vertretungsplan vertretungsplan) {
-
         Profile profile = ProfileManager
                 .load(PreferenceManager.getDefaultSharedPreferences(this));
         if (profile == null) {
@@ -88,23 +105,24 @@ public class MainActivity extends RoboActionBarActivity {
         viewPager.setAdapter(dayPagerAdapter);
         tabLayout.setupWithViewPager(viewPager);
 
-        hideVertretungsplanViews(false);
+        setUiState(UI_STATE.SHOWING_VERTRETUNGSPLAN);
 
         toolbar.setTitle("Vertretungsplan - " + profile.toString());
     }
 
-    public void onVertretungsplanDownloadError(@Observes VertretungsplanDownloadError event) {
-        hideVertretungsplanViews(true);
-        if (event.getException() instanceof LoginException) {
-            new AlertDialog.Builder(this).setMessage("Server akzeptiert Logindaten nicht!").create().show();
-        } else {
-            Toast.makeText(this, "Fehler!", Toast.LENGTH_LONG).show();
-        }
+    enum UI_STATE {
+        LOADING, INTERNET_ERROR, SHOWING_VERTRETUNGSPLAN
     }
 
-    private void hideVertretungsplanViews(boolean hide) {
-        viewPager.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
-        tabLayout.setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
+    private void setUiState(UI_STATE state) {
+        viewPager.setVisibility(state == UI_STATE.LOADING || state == UI_STATE.INTERNET_ERROR ?
+                View.INVISIBLE : View.VISIBLE);
+        progressBar.setVisibility(state == UI_STATE.LOADING ? View.VISIBLE : View.INVISIBLE);
+        switch (state) {
+            case LOADING:
+            case INTERNET_ERROR:
+                tabLayout.removeAllTabs();
+        }
     }
 
     @Override

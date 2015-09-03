@@ -31,4 +31,10 @@
         android:id="@+id/view_pager"
         android:layout_below="@id/tab_layout" />
 
+    <ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/progress"
+        android:layout_centerInParent="true" />
+
 </RelativeLayout>

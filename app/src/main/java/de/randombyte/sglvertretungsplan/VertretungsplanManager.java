@@ -7,7 +7,8 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 
 import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadError;
-import de.randombyte.sglvertretungsplan.events.VertretungsplanSaved;
+import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadStartedEvent;
+import de.randombyte.sglvertretungsplan.events.VertretungsplanSavedEvent;
 import de.randombyte.sglvertretungsplan.models.Login;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
 import roboguice.event.EventManager;
@@ -21,12 +22,19 @@ public class VertretungsplanManager {
         new VertretungsplanDownloader(context, login) {
 
             @Override
+            protected void onPreExecute() throws Exception {
+                super.onPreExecute();
+
+                eventManager.fire(new VertretungsplanDownloadStartedEvent());
+            }
+
+            @Override
             protected void onSuccess(Vertretungsplan vertretungsplan) throws Exception {
                 SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
                 String json = new Gson().toJson(vertretungsplan);
                 editor.putString(PREF_VERTRETUNGSPLAN_KEY, json);
                 editor.apply();
-                eventManager.fire(new VertretungsplanSaved(vertretungsplan));
+                eventManager.fire(new VertretungsplanSavedEvent(vertretungsplan));
             }
 
             @Override
