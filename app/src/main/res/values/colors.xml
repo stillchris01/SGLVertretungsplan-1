@@ -3,4 +3,6 @@
     <color name="blue">#2196F3</color>
     <color name="blueDark">#1976D2</color>
     <color name="pinkAccent200">#FF4081</color>
+
+    <color name="greyBackground">#303030</color>
 </resources>

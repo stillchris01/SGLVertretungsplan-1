@@ -3,6 +3,7 @@ package de.randombyte.sglvertretungsplan.fragments;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -12,6 +13,7 @@ import de.randombyte.sglvertretungsplan.LoginManager;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.LoginUpdatedEvent;
 import de.randombyte.sglvertretungsplan.fragments.login.LoginDialog;
+import de.randombyte.sglvertretungsplan.models.Login;
 import roboguice.RoboGuice;
 import roboguice.event.Observes;
 
@@ -29,25 +31,35 @@ public class SettingsFragment extends PreferenceFragment {
         findPreference(PREFS_LOGIN).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-
-                //LoginFragment in dialog
-                FragmentManager fragmentManager = getChildFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                Fragment fragment = fragmentManager.findFragmentByTag(LoginDialog.TAG);
-                if (fragment != null) {
-                    fragmentTransaction.remove(fragment);
-                }
-                fragmentTransaction.addToBackStack(null);
-
-                LoginDialog dialog = LoginDialog.newInstance(LoginManager.load(
+                showLoginDialog(getActivity(), getChildFragmentManager(), LoginManager.load(
                         PreferenceManager.getDefaultSharedPreferences(getActivity())
                 ));
-                RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(dialog);
-                dialog.show(fragmentTransaction, LoginDialog.TAG);
 
                 return true;
             }
         });
+    }
+
+    /**
+     * Shows the LoginDialog
+     * @param context Context to be used for RoboGuice EventManger
+     * @param fragmentManager FragmentManager where the dialog will be shown
+     * @param login Login which is shown in the dialog
+     * @return The shown LoginDialog
+     */
+    public static LoginDialog showLoginDialog(Context context, FragmentManager fragmentManager, Login login) {
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        Fragment fragment = fragmentManager.findFragmentByTag(LoginDialog.TAG);
+        if (fragment != null) {
+            fragmentTransaction.remove(fragment);
+        }
+        fragmentTransaction.addToBackStack(null);
+
+        LoginDialog dialog = LoginDialog.newInstance(login);
+        RoboGuice.getInjector(context).injectMembersWithoutViews(dialog);
+        dialog.show(fragmentTransaction, LoginDialog.TAG);
+
+        return dialog;
     }
 
 /*    public void onTestLoginFinished(@Observes TestLoginFinishedEvent event) {
