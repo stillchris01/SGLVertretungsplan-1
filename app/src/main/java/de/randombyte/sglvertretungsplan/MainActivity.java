@@ -199,7 +199,7 @@ public class MainActivity extends RoboActionBarActivity {
                 errorView.setOnRetryListener(new ErrorView.RetryListener() {
                     @Override
                     public void onRetry() {
-                        SettingsFragment.showLoginDialog(MainActivity.this, getFragmentManager(),
+                        SettingsFragment.showLoginDialog(MainActivity.this, getSupportFragmentManager(),
                                 LoginManager.load(PreferenceManager
                                         .getDefaultSharedPreferences(MainActivity.this)));
                     }

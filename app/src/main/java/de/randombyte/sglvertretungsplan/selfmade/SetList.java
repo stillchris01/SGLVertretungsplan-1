@@ -1,4 +1,4 @@
-package de.randombyte.sglvertretungsplan;
+package de.randombyte.sglvertretungsplan.selfmade;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -7,4 +7,5 @@
             android:targetClass="de.randombyte.sglvertretungsplan.EditProfileActivity"/>
     </Preference>
     <Preference android:key="prefs_login" android:title="Logindaten ändern" />
+    <CheckBoxPreference android:key="prefs_first_start" android:title="FirstStart" />
 </PreferenceScreen>

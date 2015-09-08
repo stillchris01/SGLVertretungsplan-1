@@ -5,7 +5,7 @@ import android.os.Parcelable;
 
 import java.util.List;
 
-import de.randombyte.sglvertretungsplan.SetList;
+import de.randombyte.sglvertretungsplan.selfmade.SetList;
 
 public class Vertretung implements Parcelable {
 

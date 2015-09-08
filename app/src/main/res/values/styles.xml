@@ -5,6 +5,7 @@
         <item name="colorAccent">@color/pinkAccent200</item>
 
         <item name="buttonBarButtonStyle">@style/DarkButtonBarButtonStyle</item>
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
     <style name="DarkButtonBarButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">

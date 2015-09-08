@@ -1,9 +1,9 @@
 package de.randombyte.sglvertretungsplan.fragments.login;
 
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +22,7 @@ import roboguice.event.Observes;
 public class LoginDialog extends DialogFragment {
 
     public static final String TAG = "loginDialog";
+    public static final int DIALOG_CLOSE_DELAY_AFTER_SUCCESSFULL_LOGIN = 1000;
 
     private @Inject EventManager eventManager;
 
@@ -86,7 +87,7 @@ public class LoginDialog extends DialogFragment {
                             dismiss();
                         }
                     }
-                }, 1000);
+                }, DIALOG_CLOSE_DELAY_AFTER_SUCCESSFULL_LOGIN);
             } else {
                 loginButton.setEnabled(true);
             }

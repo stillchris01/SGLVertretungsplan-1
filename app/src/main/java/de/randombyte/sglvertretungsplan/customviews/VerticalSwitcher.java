@@ -34,7 +34,7 @@ public class VerticalSwitcher extends FrameLayout {
         try {
             if (!isInEditMode()) {
                 entries = context.getResources()
-                        .getStringArray(attributes.getResourceId(R.styleable.VerticalSwitcher_entries, 0));
+                        .getStringArray(attributes.getResourceId(R.styleable.VerticalSwitcher_eintraege, 0));
             }
             textSize = attributes.getDimension(R.styleable.VerticalSwitcher_android_textSize, 16);
         } finally {

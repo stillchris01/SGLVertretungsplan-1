@@ -1,10 +1,10 @@
 package de.randombyte.sglvertretungsplan.fragments.login;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,7 +27,7 @@ import roboguice.event.Observes;
 import roboguice.util.RoboAsyncTask;
 
 /**
- * Split into two parts: The Fragment itself(EditTexts and ProgressBar) and the Dialog(login Button
+ * NOT UP-TO-DATE! Split into two parts: The Fragment itself(EditTexts and ProgressBar) and the Dialog(login Button
  * as positive button).
  * When shown as a Dialog it fires the TestLoginStartEvent when the positive button is clicked.
  * To use this fragment in an Activity you have to fire TestLoginStartEvent, e.g. when a login
@@ -46,15 +46,16 @@ public class LoginFragment extends Fragment {
     private @Inject EventManager eventManager;
 
     private Login login;
+    private boolean isIntro;
 
     private EditText username;
     private EditText password;
     private ProgressBar progress;
-    private TextView loginStatus;
 
+    private TextView loginStatus;
     private AsyncTask runningTask;
 
-    public static LoginFragment newInstance(Login login) {
+    public static LoginFragment newInstance(@Nullable Login login) {
 
         Bundle args = new Bundle();
         args.putParcelable(ARGS_LOGIN, login);
@@ -91,6 +92,9 @@ public class LoginFragment extends Fragment {
         progress = (ProgressBar) rootView.findViewById(R.id.progress);
         loginStatus = (TextView) rootView.findViewById(R.id.login_status);
 
+        if (isIntro) {
+            rootView.setBackgroundColor(getActivity().getResources().getColor(R.color.blue));
+        }
         username.setText(login.getUsername());
         password.setText(login.getPassword());
         password.setOnEditorActionListener(new TextView.OnEditorActionListener() {

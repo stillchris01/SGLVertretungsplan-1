@@ -20,7 +20,7 @@ public class SettingsActivity extends RoboActionBarActivity {
         SettingsFragment settingsFragment = new SettingsFragment();
         RoboGuice.getInjector(this).injectMembersWithoutViews(settingsFragment);
 
-        getFragmentManager().beginTransaction()
+        getSupportFragmentManager().beginTransaction()
                 .replace(R.id.main_content, settingsFragment)
                 .commit();
     }
