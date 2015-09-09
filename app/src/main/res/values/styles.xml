@@ -8,6 +8,10 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
+    <style name="LightTextHintAppearance" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
     <style name="DarkButtonBarButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
         <item name="android:textColor">?attr/colorPrimary</item>
     </style>

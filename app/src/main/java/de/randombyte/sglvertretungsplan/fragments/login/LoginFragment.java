@@ -1,9 +1,11 @@
 package de.randombyte.sglvertretungsplan.fragments.login;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.KeyEvent;
@@ -42,6 +44,7 @@ public class LoginFragment extends Fragment {
     public static final String TAG = "loginFragment";
 
     public static final String ARGS_LOGIN = "args_profile";
+    public static final String ARGS_IS_INTRO = "args_is_intro";
 
     private @Inject EventManager eventManager;
 
@@ -50,15 +53,18 @@ public class LoginFragment extends Fragment {
 
     private EditText username;
     private EditText password;
-    private ProgressBar progress;
+    private TextInputLayout passwordInputLayout;
+    private TextInputLayout usernameInputLayout;
 
+    private ProgressBar progress;
     private TextView loginStatus;
     private AsyncTask runningTask;
 
-    public static LoginFragment newInstance(@Nullable Login login) {
+    public static LoginFragment newInstance(@Nullable Login login, boolean isIntro) {
 
         Bundle args = new Bundle();
         args.putParcelable(ARGS_LOGIN, login);
+        args.putBoolean(ARGS_IS_INTRO, isIntro);
 
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(args);
@@ -76,6 +82,7 @@ public class LoginFragment extends Fragment {
             if (login == null) {
                 login = new Login("","");
             }
+            isIntro = getArguments().getBoolean(ARGS_IS_INTRO, false);
         }
     }
 
@@ -88,12 +95,17 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(final View rootView, @Nullable Bundle savedInstanceState) {
         username = (EditText) rootView.findViewById(R.id.login_username);
+        usernameInputLayout = (TextInputLayout) rootView.findViewById(R.id.user_input_layout);
         password = (EditText) rootView.findViewById(R.id.login_password);
+        passwordInputLayout = (TextInputLayout) rootView.findViewById(R.id.password_input_layout);
         progress = (ProgressBar) rootView.findViewById(R.id.progress);
         loginStatus = (TextView) rootView.findViewById(R.id.login_status);
 
         if (isIntro) {
-            rootView.setBackgroundColor(getActivity().getResources().getColor(R.color.blue));
+            username.setTextColor(Color.WHITE);
+            password.setTextColor(Color.WHITE);
+            usernameInputLayout.setHintTextAppearance(R.style.LightTextHintAppearance);
+            passwordInputLayout.setHintTextAppearance(R.style.LightTextHintAppearance);
         }
         username.setText(login.getUsername());
         password.setText(login.getPassword());

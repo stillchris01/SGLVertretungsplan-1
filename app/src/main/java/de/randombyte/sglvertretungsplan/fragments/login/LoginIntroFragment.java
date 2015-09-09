@@ -24,11 +24,9 @@ public class LoginIntroFragment extends RoboFragment {
     public void onViewCreated(View rootView, Bundle savedInstanceState) {
         super.onViewCreated(rootView, savedInstanceState);
 
-        rootView.setBackgroundColor(getActivity().getResources().getColor(R.color.blue));
-
         LoginFragment loginFragment = LoginFragment.newInstance(
                 LoginManager.load(PreferenceManager
-                        .getDefaultSharedPreferences(getActivity())));
+                        .getDefaultSharedPreferences(getActivity())), true);
         RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(loginFragment);
 
         getChildFragmentManager().beginTransaction()
