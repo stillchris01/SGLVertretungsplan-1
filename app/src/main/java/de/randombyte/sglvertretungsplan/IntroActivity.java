@@ -15,6 +15,8 @@ public class IntroActivity extends RoboIntro2 {
 
     @Override
     public void init(Bundle bundle) {
+        RoboGuice.getInjector(this).injectMembersWithoutViews(this); // look for @Oberves and register them
+
         LoginIntroFragment loginFragment = new LoginIntroFragment();
         RoboGuice.getInjector(this).injectMembersWithoutViews(loginFragment);
 
