@@ -1,6 +1,7 @@
 package de.randombyte.sglvertretungsplan;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
@@ -22,6 +23,8 @@ import roboguice.inject.InjectView;
 
 @ContentView(R.layout.activity_edit_profile)
 public class EditProfileActivity extends RoboActionBarActivity {
+
+    public static final String ARGS_IS_INTRO = "args_is_intro";
 
     private  @InjectView(R.id.toolbar) Toolbar toolbar;
     private  @InjectView(R.id.spinner_stufe) Spinner spinnerStufe;
@@ -81,6 +84,16 @@ public class EditProfileActivity extends RoboActionBarActivity {
         super.onPause();
 
         ProfileManager.save(PreferenceManager.getDefaultSharedPreferences(this), profile);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        // Normally called when Activity is about to be finished
+        if (getIntent().getBooleanExtra(ARGS_IS_INTRO, false)) {
+            startActivity(new Intent(this, MainActivity.class));
+        }
     }
 
     private static int stufeToSpinnerPos(Context context, String stufe) {

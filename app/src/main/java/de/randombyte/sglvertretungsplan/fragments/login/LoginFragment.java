@@ -53,8 +53,6 @@ public class LoginFragment extends Fragment {
 
     private EditText username;
     private EditText password;
-    private TextInputLayout passwordInputLayout;
-    private TextInputLayout usernameInputLayout;
 
     private ProgressBar progress;
     private TextView loginStatus;
@@ -95,9 +93,9 @@ public class LoginFragment extends Fragment {
     @Override
     public void onViewCreated(final View rootView, @Nullable Bundle savedInstanceState) {
         username = (EditText) rootView.findViewById(R.id.login_username);
-        usernameInputLayout = (TextInputLayout) rootView.findViewById(R.id.user_input_layout);
+        TextInputLayout usernameInputLayout = (TextInputLayout) rootView.findViewById(R.id.user_input_layout);
         password = (EditText) rootView.findViewById(R.id.login_password);
-        passwordInputLayout = (TextInputLayout) rootView.findViewById(R.id.password_input_layout);
+        TextInputLayout passwordInputLayout = (TextInputLayout) rootView.findViewById(R.id.password_input_layout);
         progress = (ProgressBar) rootView.findViewById(R.id.progress);
         loginStatus = (TextView) rootView.findViewById(R.id.login_status);
 
@@ -106,6 +104,7 @@ public class LoginFragment extends Fragment {
             password.setTextColor(Color.WHITE);
             usernameInputLayout.setHintTextAppearance(R.style.LightTextHintAppearance);
             passwordInputLayout.setHintTextAppearance(R.style.LightTextHintAppearance);
+            loginStatus.setTextColor(Color.WHITE);
         }
         username.setText(login.getUsername());
         password.setText(login.getPassword());

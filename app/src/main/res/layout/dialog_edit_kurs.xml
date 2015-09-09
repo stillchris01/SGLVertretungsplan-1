@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:verticalSwitcher="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp">
@@ -20,7 +20,7 @@
             android:id="@+id/gk_lk_switcher"
             android:textSize="6sp"
             android:layout_gravity="center_vertical"
-            app:entries="@array/gk_lk_switcher_entries" />
+            verticalSwitcher:eintraege="@array/gk_lk_switcher_entries" />
 
         <de.randombyte.sglvertretungsplan.customviews.VerticalSwitcher
             android:layout_width="wrap_content"
@@ -28,7 +28,7 @@
             android:id="@+id/kurs_nummer_switcher"
             android:textSize="6sp"
             android:layout_gravity="center_vertical"
-            app:entries="@array/kurs_nummer_switcher_entries"
+            verticalSwitcher:eintraege="@array/kurs_nummer_switcher_entries"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp" />
 
@@ -47,7 +47,7 @@
             android:id="@+id/fach_switcher"
             android:textSize="6sp"
             android:layout_gravity="center_vertical"
-            app:entries="@array/fach_switcher_entries"
+            verticalSwitcher:eintraege="@array/fach_switcher_entries"
             android:layout_marginLeft="12dp"
             android:layout_marginStart="12dp" />
 

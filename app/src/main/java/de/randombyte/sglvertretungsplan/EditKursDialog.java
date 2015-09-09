@@ -66,16 +66,16 @@ public class EditKursDialog extends DialogFragment {
         View rootView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.dialog_edit_kurs, null, false);
 
-        //Views
+        // Views
         kursNummerSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.kurs_nummer_switcher);
         gkLkSwicther = (VerticalSwitcher) rootView.findViewById(R.id.gk_lk_switcher);
         fachSwitcher = (VerticalSwitcher) rootView.findViewById(R.id.fach_switcher);
         optionalLehrer = (EditText) rootView.findViewById(R.id.optional_lehrer);
 
-        kursNummerSwitcher.setIndex(kurs.getNummer() -1); //hacky
-        gkLkSwicther.setIndex(kurs.isGrundkurs() ? 0 : 1); //hacky
+        kursNummerSwitcher.setIndex(kurs.getNummer() -1); // hacky
+        gkLkSwicther.setIndex(kurs.isGrundkurs() ? 0 : 1); // hacky
         fachSwitcher.setIndex(
-                Arrays.asList(fachSwitcher.getEntries()).indexOf(kurs.getFach())); //more hacky :/
+                Arrays.asList(fachSwitcher.getEntries()).indexOf(kurs.getFach())); // more hacky :/
         optionalLehrer.setText(kurs.getOptionalLehrer());
 
         return new AlertDialog.Builder(getActivity())
