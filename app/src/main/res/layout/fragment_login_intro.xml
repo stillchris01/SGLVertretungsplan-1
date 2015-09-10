@@ -21,10 +21,11 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/main_content"
         android:layout_margin="16dp"
-        android:text="Bitte Logindaten eingeben"
+        android:text="Bitte Logindaten für\nden Online-Vertretungsplan eingeben:"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:layout_centerHorizontal="true"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:gravity="center" />
 
     <FrameLayout
         android:layout_width="wrap_content"
