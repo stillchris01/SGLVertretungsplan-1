@@ -142,8 +142,8 @@ public class LoginFragment extends Fragment {
 
     private Login constructLogin() {
         login = new Login(
-                username.getEditableText().toString(),
-                password.getEditableText().toString());
+                username.getEditableText().toString().trim(),
+                password.getEditableText().toString().trim());
         return login;
     }
 
