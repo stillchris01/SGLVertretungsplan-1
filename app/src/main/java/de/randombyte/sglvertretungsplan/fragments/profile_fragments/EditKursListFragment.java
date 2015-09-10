@@ -22,6 +22,7 @@ import de.randombyte.sglvertretungsplan.EditKursDialog;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.adapters.KursListAdapter;
 import de.randombyte.sglvertretungsplan.events.KursClickEvent;
+import de.randombyte.sglvertretungsplan.events.KursListUpdatedEvent;
 import de.randombyte.sglvertretungsplan.models.Kurs;
 import roboguice.RoboGuice;
 import roboguice.event.EventManager;
@@ -36,6 +37,7 @@ public class EditKursListFragment extends RoboFragment {
     private @Inject EventManager eventManager;
 
     private @InjectView(R.id.recycler_view) RecyclerView recyclerView;
+    private @InjectView(R.id.list_empty) View emptyView;
     private @InjectView(R.id.fab) FloatingActionButton fab;
 
     private List<Kurs> kursList;
@@ -75,6 +77,8 @@ public class EditKursListFragment extends RoboFragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(kursListAdapter);
 
+        setKursListEmpty(kursList.size() == 0);
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,6 +89,15 @@ public class EditKursListFragment extends RoboFragment {
 
     public void onKursClick(@Observes KursClickEvent event) {
         showKursDialog(event.getKurs());
+    }
+
+    private void setKursListEmpty(boolean empty) {
+        recyclerView.setVisibility(empty ? View.INVISIBLE : View.VISIBLE);
+        emptyView.setVisibility(empty ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public void onKursListUpdated(@Observes KursListUpdatedEvent event) {
+        setKursListEmpty(event.getKursList().size() == 0);
     }
 
     private void showKursDialog(Kurs kurs) {
