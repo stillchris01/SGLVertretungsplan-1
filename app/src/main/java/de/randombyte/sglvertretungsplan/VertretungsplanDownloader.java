@@ -3,6 +3,8 @@ package de.randombyte.sglvertretungsplan;
 import android.content.Context;
 import android.util.Log;
 
+import com.google.common.base.CharMatcher;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -95,6 +97,7 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
     protected abstract void onException(Exception e) throws RuntimeException;
 
     private String getText(List<Element> elements, int index) {
-        return elements.get(index).text();
+        // Using Guava because non-breaking space isn't trimmed by Java's native trim()
+        return CharMatcher.WHITESPACE.trimFrom(elements.get(index).text());
     }
 }

@@ -46,4 +46,5 @@ dependencies {
     compile 'com.intellij:annotations:12.0'
     compile 'com.github.xiprox.errorview:library:2.2.0'
     compile 'com.github.paolorotolo:appintro:3.2.0'
+    compile 'com.google.guava:guava:18.0'
 }

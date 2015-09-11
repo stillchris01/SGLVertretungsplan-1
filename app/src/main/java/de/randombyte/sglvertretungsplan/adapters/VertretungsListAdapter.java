@@ -1,6 +1,7 @@
 package de.randombyte.sglvertretungsplan.adapters;
 
 import android.graphics.Paint;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
 
         private View rootView;
         private TextView title;
+        private View zusatzinfo;
         private TextView vertreter;
         private TextView raum;
         private TextView statt;
@@ -36,6 +38,7 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
             super(itemView);
             rootView = itemView;
             title = (TextView) rootView.findViewById(R.id.title);
+            zusatzinfo = rootView.findViewById(R.id.zusatzinfo);
             vertreter = (TextView) rootView.findViewById(R.id.vertreter);
             raum = (TextView) rootView.findViewById(R.id.raum);
             statt = (TextView) rootView.findViewById(R.id.statt);
@@ -60,8 +63,8 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
             return;
         }
 
-        ViewHolder viewHolder = (ViewHolder) holder;
-        Vertretung vertretung = vertretungList.get(position);
+        final ViewHolder viewHolder = (ViewHolder) holder;
+        final Vertretung vertretung = vertretungList.get(position);
 
         //todo: in future use databindings
         viewHolder.title.setText((vertretung.getZeitraum().contains("-")
@@ -72,9 +75,36 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
         viewHolder.statt.setText("Statt: " + vertretung.getStatt());
         viewHolder.fach.setText("Fach: " + vertretung.getFach());
         viewHolder.raum.setText("Raum: " + vertretung.getRaum());
-        //todo: viewHolder.verlegung.setText(vertretung.getVerlegung());
 
-        //Strikethroughs
+        // Zusatzinfos(Zusatzinfo + Verlegung)
+        String zusatzinfoMessage = "";
+        if (vertretung.getZusatzinfo() != null && !vertretung.getZusatzinfo().isEmpty()) {
+            zusatzinfoMessage += "Zusatzinfo: " + vertretung.getZusatzinfo();
+        }
+        if (vertretung.getVerlegung() != null && !vertretung.getVerlegung().isEmpty()) {
+            if (!zusatzinfoMessage.isEmpty()) {
+                zusatzinfoMessage += "\n";
+            }
+            zusatzinfoMessage += "Verlegung: " + vertretung.getVerlegung();
+        }
+
+        if (!zusatzinfoMessage.isEmpty()) {
+            viewHolder.zusatzinfo.setVisibility(View.VISIBLE);
+            final String finalZusatzinfoMessage = zusatzinfoMessage;
+            viewHolder.zusatzinfo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new AlertDialog.Builder(viewHolder.rootView.getContext())
+                            .setMessage(finalZusatzinfoMessage)
+                            .create()
+                            .show();
+                }
+            });
+        } else {
+            viewHolder.zusatzinfo.setVisibility(View.INVISIBLE);
+        }
+
+        // Strikethroughs
         Art art = vertretung.parseArt();
         switch (art) {
             case ENTFALL:
