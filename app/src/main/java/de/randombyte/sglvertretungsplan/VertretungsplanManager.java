@@ -10,7 +10,7 @@ import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadError;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadStartedEvent;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanSavedEvent;
 import de.randombyte.sglvertretungsplan.models.Login;
-import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
+import de.randombyte.sglvertretungsplan.models.VertretungsplanAndLogin;
 import roboguice.event.EventManager;
 
 public class VertretungsplanManager {
@@ -29,12 +29,17 @@ public class VertretungsplanManager {
             }
 
             @Override
-            protected void onSuccess(Vertretungsplan vertretungsplan) throws Exception {
-                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(context).edit();
-                String json = new Gson().toJson(vertretungsplan);
-                editor.putString(PREF_VERTRETUNGSPLAN_KEY, json);
+            protected void onSuccess(VertretungsplanAndLogin vertretungsplanAndLogin) throws Exception {
+                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putString(PREF_VERTRETUNGSPLAN_KEY,
+                        new Gson().toJson(vertretungsplanAndLogin.getVertretungsplan()));
                 editor.apply();
-                eventManager.fire(new VertretungsplanSavedEvent(vertretungsplan));
+
+                // Saving lastAuthId
+                LoginManager.save(sharedPreferences, vertretungsplanAndLogin.getLogin());
+
+                eventManager.fire(new VertretungsplanSavedEvent(vertretungsplanAndLogin.getVertretungsplan()));
             }
 
             @Override
@@ -42,9 +47,5 @@ public class VertretungsplanManager {
                 eventManager.fire(new VertretungsplanDownloadError(e));
             }
         }.execute();
-
-
-
     }
-
 }

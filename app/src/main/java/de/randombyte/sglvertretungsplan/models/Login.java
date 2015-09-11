@@ -14,9 +14,11 @@ public class Login implements Parcelable {
 
     private static final String AUTH_ID_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/authid/";
     private static final String TIMETABLES_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/timetables/";
+    public static final String INVALID_AUTH_ID = "00000000-0000-0000-0000-000000000000";
 
     private String username;
     private String password;
+    private String lastAuthId;
 
     public Login(String username, String password) {
         this.username = username;
@@ -26,6 +28,7 @@ public class Login implements Parcelable {
     public Login(Parcel source) {
         username = source.readString();
         password = source.readString();
+        lastAuthId = source.readString();
     }
 
     public String getUsername() {
@@ -36,27 +39,66 @@ public class Login implements Parcelable {
         return password;
     }
 
+    public String getLastAuthId() {
+        return lastAuthId;
+    }
+
+    public void setLastAuthId(String lastAuthId) {
+        this.lastAuthId = lastAuthId;
+    }
+
     @WorkerThread
     public TimetableInfo[] loadLinks() throws IOException {
 
         TimetableInfo[] timetableInfo;
 
+        // First run, trying lastAuthId
+        if (lastAuthId != null && !lastAuthId.isEmpty() && !lastAuthId.equals(INVALID_AUTH_ID)) {
+            // Can be valid
+            timetableInfo = loadTimetableInfo(lastAuthId);
+            if (isBadLink(timetableInfo[0].getUrl())) {
+                // Invalid authId -> removing it do it will be reloaded
+                lastAuthId = null;
+                return loadLinks();
+            } else {
+                // Success with lastAuthId
+                return timetableInfo;
+            }
+        } else {
+            // No lastAuthId there
+            lastAuthId = loadAuthId(username, password);
+            return loadLinks();
+        }
+    }
+
+    @WorkerThread
+    private static String loadAuthId(String username, String password) throws IOException {
         Scanner authIdScanner = null;
+        String authId;
+        try {
+            URL authIdUrl = new URL(AUTH_ID_URL + username + "/" + password);
+            authIdScanner = new Scanner(authIdUrl.openStream());
+            authId = authIdScanner.nextLine().replace("\"", "");
+        } finally {
+            if (authIdScanner != null) {
+                authIdScanner.close();
+            }
+        }
+
+        return authId;
+    }
+
+    @WorkerThread
+    private static TimetableInfo[] loadTimetableInfo(String authId) throws IOException {
+        TimetableInfo[] timetableInfo;
         Scanner timetableInfoScanner = null;
 
-        URL authIdUrl = new URL(AUTH_ID_URL + username + "/" + password);
         try {
-            authIdScanner = new Scanner(authIdUrl.openStream());
-            String authId = authIdScanner.nextLine().replace("\"", "");
-
             timetableInfoScanner = new Scanner(new URL(TIMETABLES_URL + authId).openStream());
             String response = timetableInfoScanner.nextLine();
 
             timetableInfo = new Gson().fromJson(response, TimetableInfo[].class);
         } finally {
-            if (authIdScanner != null) {
-                authIdScanner.close();
-            }
             if (timetableInfoScanner != null) {
                 timetableInfoScanner.close();
             }
@@ -90,5 +132,6 @@ public class Login implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(username);
         dest.writeString(password);
+        dest.writeString(lastAuthId);
     }
 }

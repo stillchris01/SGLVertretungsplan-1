@@ -21,9 +21,10 @@ import de.randombyte.sglvertretungsplan.models.Login;
 import de.randombyte.sglvertretungsplan.models.TimetableInfo;
 import de.randombyte.sglvertretungsplan.models.Vertretung;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
+import de.randombyte.sglvertretungsplan.models.VertretungsplanAndLogin;
 import roboguice.util.RoboAsyncTask;
 
-public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretungsplan> {
+public abstract class VertretungsplanDownloader extends RoboAsyncTask<VertretungsplanAndLogin> {
 
     public static final int COLUMNS_COUNT = 9;
     
@@ -34,9 +35,9 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
         this.login = login;
     }
 
-    //The only method called by RoboAsyncTask asyncly
+    // The only method called by RoboAsyncTask asyncly
     @Override
-    public Vertretungsplan call() throws Exception {
+    public VertretungsplanAndLogin call() throws Exception {
 
         Vertretungsplan vertretungsplan = new Vertretungsplan();
 
@@ -52,23 +53,23 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
 
             Document vertretungsplanDoc = Jsoup.connect(timetableInfo.getUrl()).get();
 
-            //Motd
+            // Motd
             Element motd = vertretungsplanDoc.select("tr.info").last();
             if (motd != null) {
                 day.setMotd(motd.text());
             }
 
-            //Timestamp
+            // Timestamp
             day.setTimestamp(
                     vertretungsplanDoc.select("table.mon_head").first().text().split("Stand: ")[1]);
 
-            //Date
+            // Date
             String[] dateSplits = vertretungsplanDoc.select("div.mon_title").first().text().split(" ");
             day.setDate(dateSplits[0]);
             day.setDayName(dateSplits[1].replace(",", ""));
 
-            //Every row with data
-            Elements rows = vertretungsplanDoc.select("td.list:not(.inline_header)");//Whitout "5a ..." row
+            // Every row with data
+            Elements rows = vertretungsplanDoc.select("td.list:not(.inline_header)");//Without "5a ..." row
 
             for (List<Element> elements : Lists.partition(rows, COLUMNS_COUNT)) {
                 Vertretung vertretung = new Vertretung();
@@ -87,11 +88,11 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
             vertretungsplan.getDays().add(day);
         }
 
-        return vertretungsplan;
+        return new VertretungsplanAndLogin(vertretungsplan, login);
     }
 
     @Override
-    protected abstract void onSuccess(Vertretungsplan vertretungsplan) throws Exception;
+    protected abstract void onSuccess(VertretungsplanAndLogin vertretungsplanAndLogin) throws Exception;
 
     @Override
     protected abstract void onException(Exception e) throws RuntimeException;
