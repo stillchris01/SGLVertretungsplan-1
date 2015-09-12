@@ -37,7 +37,7 @@ dependencies {
     compile "com.android.support:preference-v14:23.0.1"
     compile "org.roboguice:roboguice:3.+"
     provided "org.roboguice:roboblender:3.+"
-    compile("com.mikepenz:aboutlibraries:5.2.1@aar") {
+    compile("com.mikepenz:aboutlibraries:5.2.2@aar") {
         transitive = true
     }
     compile "com.google.code.gson:gson:2.3.1"

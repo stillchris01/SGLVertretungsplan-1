@@ -104,7 +104,6 @@ public class DayFragment extends RoboFragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
-
         inflater.inflate(R.menu.menu_day_fragment, menu);
     }
 

@@ -8,6 +8,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import com.mikepenz.aboutlibraries.Libs;
+import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import de.randombyte.sglvertretungsplan.LoginManager;
 import de.randombyte.sglvertretungsplan.R;
@@ -20,6 +26,13 @@ import roboguice.event.Observes;
 public class SettingsFragment extends PreferenceFragmentCompat {
 
     public static final String PREFS_LOGIN = "prefs_login";
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
@@ -83,5 +96,24 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     public void onLoginUpdated(@Observes LoginUpdatedEvent event) {
         LoginManager.save(PreferenceManager.getDefaultSharedPreferences(getActivity()), event.getLogin());
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_settings, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_about) {
+            new LibsBuilder()
+                    .withFields(R.string.class.getFields())
+                    .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                    .start(getActivity());
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }
