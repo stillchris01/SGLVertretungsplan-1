@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="define_AppIntro">owner</string>
+    <!-- Author section -->
+    <string name="library_AppIntro_author">Paolo Rotolo</string>
+    <string name="library_AppIntro_authorWebsite">http://paolorotolo.github.io/</string>
+    <!-- Library section -->
+    <string name="library_AppIntro_libraryName">AppIntro</string>
+    <string name="library_AppIntro_libraryDescription">Make a cool intro for your Android app.</string>
+    <string name="library_AppIntro_libraryVersion">3.2.0</string>
+    <!-- OpenSource section -->
+    <string name="library_AppIntro_isOpenSource">true</string>
+    <string name="library_AppIntro_repositoryLink">https://github.com/PaoloRotolo/AppIntro</string>
+    <!-- License section -->
+    <string name="library_AppIntro_licenseId">apache_2_0</string>
+    <!-- Custom variables section -->
+    <string name="library_AppIntro_owner">Paolo Rotolo</string>
+
+</resources>

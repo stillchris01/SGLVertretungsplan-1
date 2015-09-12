@@ -35,8 +35,8 @@ dependencies {
     compile "com.android.support:support-v4:23.0.1"
     compile "com.android.support:design:23.0.1"
     compile "com.android.support:preference-v14:23.0.1"
-    compile "org.roboguice:roboguice:3.+"
-    provided "org.roboguice:roboblender:3.+"
+    compile "org.roboguice:roboguice:3.0.1"
+    provided "org.roboguice:roboblender:3.0.1"
     compile("com.mikepenz:aboutlibraries:5.2.2@aar") {
         transitive = true
     }

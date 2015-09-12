@@ -111,6 +111,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             new LibsBuilder()
                     .withFields(R.string.class.getFields())
                     .withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                    .withLibraries("Jsoup", "AppCompat Library", "Support Library")
+                    .withAboutIconShown(true)
+                    .withAboutVersionShown(true)
                     .start(getActivity());
         }
 
