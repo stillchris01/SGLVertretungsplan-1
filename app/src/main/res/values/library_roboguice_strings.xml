@@ -9,7 +9,7 @@
         RoboGuice 3 takes the guesswork out of development. Inject your View, Resource, System Service, or any other object, and let RoboGuice 3 take care of the details.
     </string>
     <string name="library_RoboGuice_libraryVersion">3.0.1</string>
-    <string name="library_RoboGuice_libraryWebsite">https://roboguice.org</string>
+    <string name="library_RoboGuice_libraryWebsite">http://roboguice.org</string>
     <string name="library_RoboGuice_licenseId">apache_2_0</string>
     <string name="library_RoboGuice_isOpenSource">true</string>
     <string name="library_RoboGuice_repositoryLink">https://github.com/roboguice/roboguice</string>
