@@ -180,20 +180,24 @@ public class Vertretung implements Parcelable {
 
         for (Vertretung vertretung : vertretungList) {
             if (profile.isOberstufe()) {
-                if (profile.getStufe().equalsIgnoreCase(vertretung.getKlasse())) { //e.g. Q1
+                if (profile.getStufe().equalsIgnoreCase(vertretung.getKlasse())) { // e.g. Q1
                     for (Kurs kurs : profile.getKursList()) {
-                        if (vertretung.getFach().equalsIgnoreCase(kurs.toString())) { //e.g. GK06-MU
+                        if (vertretung.getFach().equalsIgnoreCase(kurs.toString())) { // e.g. GK06-MU
                             if (kurs.getOptionalLehrer() != null && !kurs.getOptionalLehrer().isEmpty()) {
                                 if (vertretung.getStatt().equalsIgnoreCase(kurs.getOptionalLehrer())) {
-                                    //OptionalLehrer specified and "Kurs" matches it
+                                    // OptionalLehrer specified and "Kurs" matches it
                                     filterResult.add(vertretung);
                                 }
                             } else {
-                                //OptionalLehrer not specified -> show every "Kurs" in "Kursband"
+                                // OptionalLehrer not specified -> show every "Kurs" in "Kursband"
                                 filterResult.add(vertretung);
                             }
                         }
                     }
+                } else if (vertretung.getKlasse().matches("K" + profile.getStufe() + "\\d")) {
+                    // Add every "Klausur" info
+                    vertretung.setArt("Klausur");
+                    filterResult.add(vertretung);
                 }
             } else {
                 if (vertretung.getKlasse().toLowerCase().contains(profile.toString().toLowerCase())) {
