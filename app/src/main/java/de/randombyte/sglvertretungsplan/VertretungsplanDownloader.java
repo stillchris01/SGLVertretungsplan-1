@@ -8,6 +8,8 @@ import com.google.common.base.CharMatcher;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
+import org.jsoup.nodes.TextNode;
 import org.jsoup.select.Elements;
 import org.roboguice.shaded.goole.common.collect.Lists;
 
@@ -56,7 +58,23 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
             // Motd
             Element motd = vertretungsplanDoc.select("tr.info").last();
             if (motd != null) {
-                day.setMotd(motd.text());
+                StringBuilder motdTextBuilder = new StringBuilder();
+                Element td = motd.select("td").first();
+                List<Node> childNodes = td.childNodes();
+                for (Node childNode : childNodes) {
+                    if (childNode instanceof Element) {
+                        if (((Element) childNode).tagName().equalsIgnoreCase("br")) {
+                            motdTextBuilder.append("\n");
+                        } else {
+                            motdTextBuilder.append(getTrimmedText((Element) childNode));
+                        }
+                    } else if (childNode instanceof TextNode) {
+                        motdTextBuilder.append(
+                                CharMatcher.WHITESPACE.trimFrom(
+                                        ((TextNode) childNode).text()));
+                    }
+                }
+                day.setMotd(motdTextBuilder.toString());
             }
 
             // Timestamp
@@ -69,19 +87,19 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
             day.setDayName(dateSplits[1].replace(",", ""));
 
             // Every row with data
-            Elements rows = vertretungsplanDoc.select("td.list:not(.inline_header)");//Without "5a ..." row
+            Elements rows = vertretungsplanDoc.select("td.list:not(.inline_header)"); // Without "5a ..." row
 
             for (List<Element> elements : Lists.partition(rows, COLUMNS_COUNT)) {
                 Vertretung vertretung = new Vertretung();
-                vertretung.setZeitraum(getText(elements, 0));
-                vertretung.setKlasse(getText(elements, 1));
-                vertretung.setVertreter(getText(elements, 2));
-                vertretung.setStatt(getText(elements, 3));
-                vertretung.setFach(getText(elements, 4));
-                vertretung.setRaum(getText(elements, 5));
-                vertretung.setVerlegung(getText(elements, 6));
-                vertretung.setArt(getText(elements, 7));
-                vertretung.setZusatzinfo(getText(elements, 8));
+                vertretung.setZeitraum(getTrimmedText(elements, 0));
+                vertretung.setKlasse(getTrimmedText(elements, 1));
+                vertretung.setVertreter(getTrimmedText(elements, 2));
+                vertretung.setStatt(getTrimmedText(elements, 3));
+                vertretung.setFach(getTrimmedText(elements, 4));
+                vertretung.setRaum(getTrimmedText(elements, 5));
+                vertretung.setVerlegung(getTrimmedText(elements, 6));
+                vertretung.setArt(getTrimmedText(elements, 7));
+                vertretung.setZusatzinfo(getTrimmedText(elements, 8));
                 day.getVertretungList().add(vertretung);
             }
 
@@ -97,8 +115,17 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
     @Override
     protected abstract void onException(Exception e) throws RuntimeException;
 
-    private String getText(List<Element> elements, int index) {
+    /**
+     * Gets the trimmed text of an Element
+     * @param element The Element to get the text from
+     * @return Trimmed text of Element
+     */
+    private String getTrimmedText(Element element) {
         // Using Guava because non-breaking space isn't trimmed by Java's native trim()
-        return CharMatcher.WHITESPACE.trimFrom(elements.get(index).text());
+        return CharMatcher.WHITESPACE.trimFrom(element.text());
+    }
+
+    private String getTrimmedText(List<Element> elements, int index) {
+        return getTrimmedText(elements.get(index));
     }
 }
