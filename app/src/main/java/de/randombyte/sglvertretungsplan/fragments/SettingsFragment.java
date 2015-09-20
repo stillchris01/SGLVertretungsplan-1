@@ -1,6 +1,8 @@
 package de.randombyte.sglvertretungsplan.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -44,6 +46,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 showLoginDialog(getActivity(), getChildFragmentManager(), LoginManager.load(
                         PreferenceManager.getDefaultSharedPreferences(getActivity())
                 ));
+
+                return true;
+            }
+        });
+
+        findPreference("prefs_debug_link").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Login login = LoginManager.load(PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                Intent debugLinkShowIntent = new Intent();
+                debugLinkShowIntent.setData(Uri.parse(Login.TIMETABLES_URL + "/" + login.getLastAuthId()));
+                startActivity(debugLinkShowIntent);
 
                 return true;
             }

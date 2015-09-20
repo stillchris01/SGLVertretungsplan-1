@@ -12,8 +12,8 @@ import java.util.Scanner;
 
 public class Login implements Parcelable {
 
-    private static final String AUTH_ID_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/authid/";
-    private static final String TIMETABLES_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/timetables/";
+    public static final String AUTH_ID_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/authid/";
+    public static final String TIMETABLES_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/timetables/";
     public static final String INVALID_AUTH_ID = "00000000-0000-0000-0000-000000000000";
 
     private String username;
