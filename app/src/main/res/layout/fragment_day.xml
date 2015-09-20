@@ -59,8 +59,14 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <include
-        layout="@layout/recyclerview_adapter_vrtg_empty"
-        android:id="@+id/day_empty" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/day_empty"
+        android:layout_centerInParent="true"
+        android:text="Keine Vertretung"
+        android:textColor="@android:color/black"
+        android:alpha="0.54"
+        android:textSize="16sp"/>
 
 </RelativeLayout>

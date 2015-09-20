@@ -116,7 +116,7 @@ public class DayFragment extends RoboFragment {
             }
         });
 
-        setDayEmpty(day.getVertretungList().size() == 0);
+        setDayEmpty(filteredVertretungList.size() == 0);
     }
 
     private void setDayEmpty(boolean empty) {

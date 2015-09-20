@@ -16,8 +16,6 @@ import de.randombyte.sglvertretungsplan.models.Vertretung;
 
 public class VertretungsListAdapter extends RecyclerView.Adapter {
 
-    private static final int EMPTY_VIEW = 10; //todo: remove?
-
     private final List<Vertretung> vertretungList;
 
     public VertretungsListAdapter(List<Vertretung> vertretungList) {
@@ -49,19 +47,11 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return viewType == EMPTY_VIEW ?
-                //todo: empty layout may cause NPE in constructor of ViewHolder?
-                new ViewHolder(inflater.inflate(R.layout.recyclerview_adapter_vrtg_empty, parent, false)) :
-                new ViewHolder(inflater.inflate(R.layout.recyclerview_adapter_vrtg, parent, false));
+        return new ViewHolder(inflater.inflate(R.layout.recyclerview_adapter_vrtg, parent, false));
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
-        if (position == 0 && vertretungList.size() == 0) {
-            //Empty
-            return;
-        }
 
         final ViewHolder viewHolder = (ViewHolder) holder;
         final Vertretung vertretung = vertretungList.get(position);
@@ -123,11 +113,6 @@ public class VertretungsListAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return vertretungList.size() == 0 ? 1 : vertretungList.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        return vertretungList.size() == 0 ? EMPTY_VIEW : super.getItemViewType(position);
+        return vertretungList.size();
     }
 }
