@@ -107,6 +107,7 @@ public class MainActivity extends RoboActionBarActivity {
             setUiState(UI_STATE.LOGIN_ERROR);
         } else {
             setUiState(UI_STATE.INTERNET_ERROR);
+            event.getException().printStackTrace();
         }
     }
 

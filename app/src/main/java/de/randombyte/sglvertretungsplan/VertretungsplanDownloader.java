@@ -115,12 +115,21 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
                     if (((Element) childNode).tagName().equalsIgnoreCase("br")) {
                         motdTextBuilder.append("\n");
                     } else {
-                        motdTextBuilder.append(getTrimmedText((Element) childNode));
+                        // Removing leading space because one was added previously in loop
+                        motdTextBuilder.append(CharMatcher.WHITESPACE.trimLeadingFrom(((Element) childNode).text()));
                     }
                 } else if (childNode instanceof TextNode) {
-                    motdTextBuilder.append(
-                            CharMatcher.WHITESPACE.trimFrom(
-                                    ((TextNode) childNode).text()));
+                    motdTextBuilder.append(CharMatcher.WHITESPACE.trimLeadingFrom(((TextNode) childNode).text()));
+                }
+
+                // Fixing spaces
+                char[] lastTwoChars = new char[2];
+                motdTextBuilder.getChars(motdTextBuilder.length() - lastTwoChars.length,
+                        motdTextBuilder.length(), lastTwoChars, 0);
+                if (!CharMatcher.WHITESPACE.matches(lastTwoChars[lastTwoChars.length-1]) &&
+                        !String.valueOf(lastTwoChars).equalsIgnoreCase("\n")) {
+                    // Last char is not WHITESPACE and last chars aren't new line
+                    motdTextBuilder.append(" ");
                 }
             }
             return motdTextBuilder.toString();
