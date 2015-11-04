@@ -13,6 +13,7 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
@@ -55,6 +56,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 Login login = LoginManager.load(PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                if (login.getLastAuthId() == null) {
+                    Toast.makeText(getActivity(), "Bitte Vertretungsplan zuerst neu laden!",
+                            Toast.LENGTH_LONG).show();
+
+                    return true;
+                }
+
                 Intent debugLinkShowIntent = new Intent();
                 debugLinkShowIntent.setData(Uri.parse(Login.TIMETABLES_URL + "/" + login.getLastAuthId()));
                 startActivity(debugLinkShowIntent);
@@ -128,6 +136,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     .withLibraries("Jsoup", "AppCompat Library", "Support Library")
                     .withAboutIconShown(true)
                     .withAboutVersionShown(true)
+                    .withActivityTitle("Credits")
                     .start(getActivity());
         }
 
