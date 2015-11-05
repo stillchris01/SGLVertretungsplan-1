@@ -20,8 +20,8 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
+import de.randombyte.sglvertretungsplan.models.Credentials;
 import de.randombyte.sglvertretungsplan.models.Day;
-import de.randombyte.sglvertretungsplan.models.Login;
 import de.randombyte.sglvertretungsplan.models.TimetableInfo;
 import de.randombyte.sglvertretungsplan.models.Vertretung;
 import de.randombyte.sglvertretungsplan.models.Vertretungsplan;
@@ -32,11 +32,11 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
 
     public static final int COLUMNS_COUNT = 9;
     
-    private final Login login;
+    private final Credentials credentials;
 
-    protected VertretungsplanDownloader(Context context, Login login) {
+    protected VertretungsplanDownloader(Context context, Credentials credentials) {
         super(context);
-        this.login = login;
+        this.credentials = credentials;
     }
 
     // The only method called by RoboAsyncTask asyncly
@@ -45,9 +45,9 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
 
         Vertretungsplan vertretungsplan = new Vertretungsplan();
 
-        for (TimetableInfo timetableInfo : login.loadLinks()) {
+        for (TimetableInfo timetableInfo : credentials.loadLinks()) {
             Log.d("urls", timetableInfo.getUrl());
-            if (Login.isBadLink(timetableInfo.getUrl())) {
+            if (Credentials.isBadLink(timetableInfo.getUrl())) {
                 throw new LoginException("Service returned NoContent! Assuming bad credentials");
             }
 
@@ -90,7 +90,7 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
             vertretungsplan.getDays().add(day);
         }
 
-        return new VertretungsplanAndLogin(vertretungsplan, login);
+        return new VertretungsplanAndLogin(vertretungsplan, credentials);
     }
 
     @Override

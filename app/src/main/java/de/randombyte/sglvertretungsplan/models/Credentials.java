@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Scanner;
 
-public class Login implements Parcelable {
+public class Credentials implements Parcelable {
 
     public static final String AUTH_ID_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/authid/";
     public static final String TIMETABLES_URL = "http://iphone.dsbcontrol.de/iPhoneService.svc/DSB/timetables/";
@@ -20,12 +20,12 @@ public class Login implements Parcelable {
     private String password;
     private String lastAuthId;
 
-    public Login(String username, String password) {
+    public Credentials(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
-    public Login(Parcel source) {
+    public Credentials(Parcel source) {
         username = source.readString();
         password = source.readString();
         lastAuthId = source.readString();
@@ -111,15 +111,15 @@ public class Login implements Parcelable {
         return url.contains("NoContent");
     }
 
-    public static final Creator<Login> CREATOR = new Creator<Login>() {
+    public static final Creator<Credentials> CREATOR = new Creator<Credentials>() {
         @Override
-        public Login createFromParcel(Parcel source) {
-            return new Login(source);
+        public Credentials createFromParcel(Parcel source) {
+            return new Credentials(source);
         }
 
         @Override
-        public Login[] newArray(int size) {
-            return new Login[size];
+        public Credentials[] newArray(int size) {
+            return new Credentials[size];
         }
     };
 
