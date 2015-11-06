@@ -45,7 +45,7 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
 
         Vertretungsplan vertretungsplan = new Vertretungsplan();
 
-        for (TimetableInfo timetableInfo : credentials.loadLinks()) {
+        for (TimetableInfo timetableInfo : DataFetcher.loadLinks()) {
             Log.d("urls", timetableInfo.getUrl());
             if (Credentials.isBadLink(timetableInfo.getUrl())) {
                 throw new LoginException("Service returned NoContent! Assuming bad credentials");
@@ -101,7 +101,7 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
 
     /**
      * Parses the MOTD, message of the day("Nachrichten zum Tag")
-     * @param document The root Document
+     * @param document The item Document
      * @return The formatted String containing the motd or null if there isn't such a row
      */
     private @Nullable String parseMotd(@NonNull Document document) {

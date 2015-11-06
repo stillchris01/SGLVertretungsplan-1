@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.google.inject.Inject;
 
+import de.randombyte.sglvertretungsplan.DataFetcher;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.LoginUpdatedEvent;
 import de.randombyte.sglvertretungsplan.events.TestLoginFinishedEvent;
@@ -196,7 +197,7 @@ public class LoginFragment extends Fragment {
          */
         @Override
         public Boolean call() throws Exception {
-            return !credentials.loadLinks()[0].getUrl().contains("NoContent");
+            return !DataFetcher.loadLinks()[0].getUrl().contains("NoContent");
         }
     }
 }
