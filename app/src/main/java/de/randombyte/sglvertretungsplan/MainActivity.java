@@ -95,7 +95,7 @@ public class MainActivity extends RoboActionBarActivity {
 
     private void loadVertretungsplan() {
         VertretungsplanManager.downloadAndSave(this,
-                LoginManager.load(PreferenceManager.getDefaultSharedPreferences(this)), eventManager);
+                CredentialsManager.load(PreferenceManager.getDefaultSharedPreferences(this)), eventManager);
     }
 
     public void onDownloadStarted(@Observes VertretungsplanDownloadStartedEvent event) {
@@ -201,7 +201,7 @@ public class MainActivity extends RoboActionBarActivity {
                     @Override
                     public void onRetry() {
                         SettingsFragment.showLoginDialog(MainActivity.this, getSupportFragmentManager(),
-                                LoginManager.load(PreferenceManager
+                                CredentialsManager.load(PreferenceManager
                                         .getDefaultSharedPreferences(MainActivity.this)));
                     }
                 });
@@ -234,7 +234,7 @@ public class MainActivity extends RoboActionBarActivity {
 
     public void onLoginUpdated(@Observes LoginUpdatedEvent event) {
         // Should only be called when LoginDialog is opened from Snackbar
-        LoginManager.save(PreferenceManager.getDefaultSharedPreferences(this), event.getCredentials());
+        CredentialsManager.save(PreferenceManager.getDefaultSharedPreferences(this), event.getCredentials());
         loadVertretungsplan(); // Retry loading after Credentials changed
     }
 

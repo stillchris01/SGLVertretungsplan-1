@@ -1,6 +1,7 @@
 package de.randombyte.sglvertretungsplan;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import com.google.gson.Gson;
@@ -14,13 +15,16 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+import de.randombyte.sglvertretungsplan.exceptions.Exceptions;
+import de.randombyte.sglvertretungsplan.exceptions.InvalidResponseException;
 import de.randombyte.sglvertretungsplan.models.Credentials;
 import de.randombyte.sglvertretungsplan.models.InstallationInfo;
-import de.randombyte.sglvertretungsplan.models.TimetableInfo;
 
 public class DataFetcher {
 
@@ -53,7 +57,7 @@ public class DataFetcher {
 
     private static class ResponseData {
 
-        private static class ResultMenuItem {
+        private static class MenuItem {
 
             private static class Item {
                 @SerializedName("Id") String id;
@@ -74,7 +78,7 @@ public class DataFetcher {
             @SerializedName("MethodName") String methodName;
             @SerializedName("NewCount") int newCount;
             @SerializedName("SaveLastState") boolean saveLastState;
-            @SerializedName("Childs") ResultMenuItem[] children;
+            @SerializedName("Childs") MenuItem[] children;
             @SerializedName("Root") Item rootItem;
         }
 
@@ -83,7 +87,7 @@ public class DataFetcher {
         @SerializedName("StartIndex") int startIndex;
         @SerializedName("ChannelType") int channelType;
         @SerializedName("MandantId") String mandatId;
-        @SerializedName("ResultMenuItems") ResultMenuItem[] resultMenuItems;
+        @SerializedName("ResultMenuItems") MenuItem[] menuItems;
     }
 
     private static class Response {
@@ -91,27 +95,41 @@ public class DataFetcher {
     }
 
     @WorkerThread
-    public static TimetableInfo[] loadLinks(Credentials credentials,
-                                            InstallationInfo installationInfo) throws IOException, UnirestException {
+    public static List<String> loadUrls(Credentials credentials,
+                                        InstallationInfo installationInfo)
+            throws IOException, UnirestException, InvalidResponseException {
 
+        // Prepare request
         Gson gson = new Gson();
         String requestJson = gson.toJson(buildRequestObject(credentials, installationInfo, "", ""));
         String gzippedRequestString = compressToGzip(requestJson);
         String bodyJson = gson.toJson(new Request(gzippedRequestString));
 
+        // Do request
         HttpResponse<String> responseString = Unirest.post(BASE_URL)
                 .body(bodyJson)
                 .asString();
 
+        // Parsing response
         Response response = gson.fromJson(responseString.getBody(), Response.class);
         String ungzippedResponse = decompressFromGzip(response.data);
         ResponseData responseData = gson.fromJson(ungzippedResponse, ResponseData.class);
 
-        //todo, new timetableinfo class(preview icon?)
+        // Validating response and searching for links
+        ResponseData.MenuItem contentMenuItem = getMenuItemByTitle(responseData.menuItems, "Inhalte");
+        Exceptions.throwIfNull(contentMenuItem, new InvalidResponseException("'Inhalte' not found!"));
 
-        TimetableInfo[] timetableInfo;
+        ResponseData.MenuItem timetableMenuItem = getMenuItemByTitle(contentMenuItem.children, "Pläne");
+        Exceptions.throwIfNull(timetableMenuItem, new InvalidResponseException("'Pläne' not found!"));
 
-        return timetableInfo;
+        List<String> urlList = new ArrayList<>(timetableMenuItem.rootItem.children.length);
+        for (ResponseData.MenuItem.Item child : timetableMenuItem.rootItem.children) {
+            if (child.children.length > 0) {
+                urlList.add(child.children[0].detail);
+            }
+        }
+
+        return urlList;
     }
 
     private static RequestData buildRequestObject(Credentials credentials, InstallationInfo info,
@@ -139,7 +157,7 @@ public class DataFetcher {
         return outputStream.toString("UTF-8");
     }
 
-    public static String decompressFromGzip(@NonNull String input) throws IOException {
+    private static String decompressFromGzip(@NonNull String input) throws IOException {
         GZIPInputStream gzip = new GZIPInputStream(new ByteArrayInputStream(input.getBytes("UTF-8")));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gzip, "UTF-8"));
         StringBuilder stringBuilder = new StringBuilder();
@@ -148,5 +166,16 @@ public class DataFetcher {
             stringBuilder.append(line);
         }
         return stringBuilder.toString();
+    }
+
+    private static @Nullable ResponseData.MenuItem getMenuItemByTitle(ResponseData.MenuItem[] menuItems,
+                                                            String title) {
+        for (ResponseData.MenuItem menuItem : menuItems) {
+            if (menuItem.title.equalsIgnoreCase(title)) {
+                return menuItem;
+            }
+        }
+
+        return null;
     }
 }

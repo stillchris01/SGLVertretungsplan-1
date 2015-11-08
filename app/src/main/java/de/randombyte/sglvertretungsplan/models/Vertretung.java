@@ -176,6 +176,10 @@ public class Vertretung implements Parcelable {
 
     public static List<Vertretung> getFiltered(List<Vertretung> vertretungList, Profile profile) {
 
+        if (profile.getStufe().equals("Debug")) {
+            return vertretungList; // Show every "Vertretung" for debugging
+        }
+
         List<Vertretung> filterResult = new SetList<>();
 
         for (Vertretung vertretung : vertretungList) {

@@ -139,7 +139,7 @@ public class DayFragment extends RoboFragment {
                         Calendar.getInstance().getTimeInMillis()) {
                     // Should be valid
                     Intent intent = new Intent(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(day.getTimetableInfo().getUrl()));
+                    intent.setData(Uri.parse(day.getUrl()));
                     startActivity(intent);
                 } else {
                     Toast.makeText(getActivity(), "Bitte Vertretungsplan zuerst neu laden!",

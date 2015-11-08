@@ -1,8 +1,6 @@
 package de.randombyte.sglvertretungsplan.fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,12 +11,11 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
-import de.randombyte.sglvertretungsplan.LoginManager;
+import de.randombyte.sglvertretungsplan.CredentialsManager;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.LoginUpdatedEvent;
 import de.randombyte.sglvertretungsplan.fragments.login.LoginDialog;
@@ -44,7 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference(PREFS_LOGIN).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                showLoginDialog(getActivity(), getChildFragmentManager(), LoginManager.load(
+                showLoginDialog(getActivity(), getChildFragmentManager(), CredentialsManager.load(
                         PreferenceManager.getDefaultSharedPreferences(getActivity())
                 ));
 
@@ -52,10 +49,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        findPreference("prefs_debug_link").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        /*findPreference("prefs_debug_link").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Credentials credentials = LoginManager.load(PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                Credentials credentials = CredentialsManager.load(PreferenceManager.getDefaultSharedPreferences(getActivity()));
                 if (credentials.getLastAuthId() == null) {
                     Toast.makeText(getActivity(), "Bitte Vertretungsplan zuerst neu laden!",
                             Toast.LENGTH_LONG).show();
@@ -69,7 +66,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
                 return true;
             }
-        });
+        });*/
     }
 
     /**
@@ -117,7 +114,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }*/
 
     public void onLoginUpdated(@Observes LoginUpdatedEvent event) {
-        LoginManager.save(PreferenceManager.getDefaultSharedPreferences(getActivity()), event.getCredentials());
+        CredentialsManager.save(PreferenceManager.getDefaultSharedPreferences(getActivity()), event.getCredentials());
     }
 
     @Override

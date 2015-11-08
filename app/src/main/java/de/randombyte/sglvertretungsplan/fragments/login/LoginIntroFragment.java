@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import de.randombyte.sglvertretungsplan.LoginManager;
+import de.randombyte.sglvertretungsplan.CredentialsManager;
 import de.randombyte.sglvertretungsplan.R;
 import roboguice.RoboGuice;
 import roboguice.fragment.RoboFragment;
@@ -25,7 +25,7 @@ public class LoginIntroFragment extends RoboFragment {
         super.onViewCreated(rootView, savedInstanceState);
 
         LoginFragment loginFragment = LoginFragment.newInstance(
-                LoginManager.load(PreferenceManager
+                CredentialsManager.load(PreferenceManager
                         .getDefaultSharedPreferences(getActivity())), true);
         RoboGuice.getInjector(getActivity()).injectMembersWithoutViews(loginFragment);
 

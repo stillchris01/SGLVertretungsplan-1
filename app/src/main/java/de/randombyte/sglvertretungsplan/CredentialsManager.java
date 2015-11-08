@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import de.randombyte.sglvertretungsplan.fragments.SettingsFragment;
 import de.randombyte.sglvertretungsplan.models.Credentials;
 
-public class LoginManager {
+public class CredentialsManager {
 
     public static void save(SharedPreferences sharedPreferences, @NotNull Credentials credentials) {
         sharedPreferences

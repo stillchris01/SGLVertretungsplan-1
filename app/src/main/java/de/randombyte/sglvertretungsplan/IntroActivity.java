@@ -59,6 +59,6 @@ public class IntroActivity extends RoboIntro2 {
     }
 
     public void onLoginUpdated(@Observes LoginUpdatedEvent event) {
-        LoginManager.save(PreferenceManager.getDefaultSharedPreferences(this), event.getCredentials());
+        CredentialsManager.save(PreferenceManager.getDefaultSharedPreferences(this), event.getCredentials());
     }
 }

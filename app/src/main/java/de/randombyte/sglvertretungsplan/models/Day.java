@@ -11,7 +11,7 @@ public class Day implements Parcelable { //Parcelable for transport from Activit
 
     public static final long URL_TIMEOUT = TimeUnit.MINUTES.toMillis(10); // After this timeout the url could be invalid
 
-    private TimetableInfo timetableInfo;
+    private String url;
     private long downloadedTimeStamp;
 
     private String timestamp;
@@ -24,7 +24,7 @@ public class Day implements Parcelable { //Parcelable for transport from Activit
     }
 
     private Day(Parcel source) {
-        timetableInfo = source.readParcelable(TimetableInfo.class.getClassLoader());
+        url = source.readString();
         downloadedTimeStamp = source.readLong();
         timestamp = source.readString();
         date = source.readString();
@@ -33,12 +33,12 @@ public class Day implements Parcelable { //Parcelable for transport from Activit
         source.readList(vertretungList, Vertretung.class.getClassLoader());
     }
 
-    public TimetableInfo getTimetableInfo() {
-        return timetableInfo;
+    public String getUrl() {
+        return url;
     }
 
-    public void setTimetableInfo(TimetableInfo timetableInfo) {
-        this.timetableInfo = timetableInfo;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public long getDownloadedTimeStamp() {
@@ -107,7 +107,7 @@ public class Day implements Parcelable { //Parcelable for transport from Activit
     };
 
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(timetableInfo, 0);
+        dest.writeString(url);
         dest.writeLong(downloadedTimeStamp);
         dest.writeString(timestamp);
         dest.writeString(date);

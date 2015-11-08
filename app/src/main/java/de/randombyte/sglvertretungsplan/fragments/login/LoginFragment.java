@@ -25,6 +25,7 @@ import de.randombyte.sglvertretungsplan.events.LoginUpdatedEvent;
 import de.randombyte.sglvertretungsplan.events.TestLoginFinishedEvent;
 import de.randombyte.sglvertretungsplan.events.TestLoginStartEvent;
 import de.randombyte.sglvertretungsplan.models.Credentials;
+import de.randombyte.sglvertretungsplan.models.InstallationInfo;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
 import roboguice.util.RoboAsyncTask;
@@ -197,7 +198,8 @@ public class LoginFragment extends Fragment {
          */
         @Override
         public Boolean call() throws Exception {
-            return !DataFetcher.loadLinks()[0].getUrl().contains("NoContent");
+            // todo think about check!!!
+            return DataFetcher.loadUrls(credentials, InstallationInfo.create(getContext())).size() > 0;
         }
     }
 }
