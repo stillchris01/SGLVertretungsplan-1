@@ -234,7 +234,8 @@ public class MainActivity extends RoboActionBarActivity {
 
     public void onLoginUpdated(@Observes LoginUpdatedEvent event) {
         // Should only be called when LoginDialog is opened from Snackbar
-        CredentialsManager.save(PreferenceManager.getDefaultSharedPreferences(this), event.getCredentials());
+        CredentialsManager.save(PreferenceManager.getDefaultSharedPreferences(this),
+                event.getCredentials());
         loadVertretungsplan(); // Retry loading after Credentials changed
     }
 
