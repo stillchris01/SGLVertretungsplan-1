@@ -3,12 +3,17 @@ package de.randombyte.sglvertretungsplan;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
+import android.util.Base64;
+import android.util.Log;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.RequestFuture;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -18,17 +23,26 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
-import de.randombyte.sglvertretungsplan.exceptions.Exceptions;
-import de.randombyte.sglvertretungsplan.exceptions.InvalidResponseException;
 import de.randombyte.sglvertretungsplan.models.Credentials;
 import de.randombyte.sglvertretungsplan.models.InstallationInfo;
 
 public class DataFetcher {
 
-    public static final String BASE_URL = "https://app.dsbcontrol.de/JsonHandler.ashx/GetData";
+    private static final String BASE_URL = "https://app.dsbcontrol.de/JsonHandler.ashx/GetData";
+    private static final int TIMEOUT = 30;
+
+    public static class Exception extends java.lang.Exception {
+
+        public Exception(String detailMessage) {
+            super(detailMessage);
+        }
+    }
 
     private static class RequestData {
         @SerializedName("AppId") UUID appId;
@@ -48,10 +62,20 @@ public class DataFetcher {
     }
 
     private static class Request {
-        @SerializedName("req") String requestData;
 
-        public Request(String requestData) {
-            this.requestData = requestData;
+        private static class Data {
+            @SerializedName("Data") String data;
+            @SerializedName("DataType") int dataType = 1;
+
+            public Data(String data) {
+                this.data = data;
+            }
+        }
+
+        @SerializedName("req") Data request;
+
+        public Request(Data data) {
+            this.request = data;
         }
     }
 
@@ -94,33 +118,73 @@ public class DataFetcher {
         @SerializedName("d") String data;
     }
 
+
+    /**
+     * @return null if failed or timeout
+     */
     @WorkerThread
-    public static List<String> loadUrls(Credentials credentials,
-                                        InstallationInfo installationInfo)
-            throws IOException, UnirestException, InvalidResponseException {
+    public static @Nullable List<String> loadUrls(Credentials credentials,
+                                        InstallationInfo installationInfo, RequestQueue queue) {
 
         // Prepare request
         Gson gson = new Gson();
         String requestJson = gson.toJson(buildRequestObject(credentials, installationInfo, "", ""));
-        String gzippedRequestString = compressToGzip(requestJson);
-        String bodyJson = gson.toJson(new Request(gzippedRequestString));
+        String gzippedRequestString;
+        try {
+            gzippedRequestString = compressToGzip(requestJson);
+        } catch (IOException e) {
+            Log.e("DataFetcher", "Gzip compression failed!");
+            e.printStackTrace();
+            return null;
+        }
+        String bodyJson = gson.toJson(new Request(new Request.Data(gzippedRequestString)));
 
         // Do request
-        HttpResponse<String> responseString = Unirest.post(BASE_URL)
-                .body(bodyJson)
-                .asString();
+        RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
+        String responseJson;
+        try {
+            JsonObjectRequest request = new JsonObjectRequest(BASE_URL, new JSONObject(bodyJson), requestFuture, requestFuture);
+            queue.add(request);
+            responseJson = requestFuture.get(TIMEOUT, TimeUnit.SECONDS).toString();
+        } catch (JSONException e) {
+            e.printStackTrace();
+            Log.e("DataFetcher", "Mustn't happen! JSONException!");
+            return null;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        } catch (TimeoutException e) {
+            Log.i("DataFetcher", "TIMEOUT, aborting data fetching");
+            return null;
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+            return null;
+        }
 
         // Parsing response
-        Response response = gson.fromJson(responseString.getBody(), Response.class);
-        String ungzippedResponse = decompressFromGzip(response.data);
+        Response response = gson.fromJson(responseJson, Response.class);
+        String ungzippedResponse;
+        try {
+            ungzippedResponse = decompressFromGzip(response.data);
+        } catch (IOException e) {
+            Log.e("DataFetcher", "Gzip decompression failed!");
+            e.printStackTrace();
+            return null;
+        }
         ResponseData responseData = gson.fromJson(ungzippedResponse, ResponseData.class);
 
         // Validating response and searching for links
         ResponseData.MenuItem contentMenuItem = getMenuItemByTitle(responseData.menuItems, "Inhalte");
-        Exceptions.throwIfNull(contentMenuItem, new InvalidResponseException("'Inhalte' not found!"));
+        if (contentMenuItem == null) {
+            Log.e("DataFetcher", "'Inhalte' not found!");
+            return null;
+        }
 
         ResponseData.MenuItem timetableMenuItem = getMenuItemByTitle(contentMenuItem.children, "Pläne");
-        Exceptions.throwIfNull(timetableMenuItem, new InvalidResponseException("'Pläne' not found!"));
+        if (timetableMenuItem == null) {
+            Log.e("DataFetcher", "'Pläne' not found!");
+            return null;
+        }
 
         List<String> urlList = new ArrayList<>(timetableMenuItem.rootItem.children.length);
         for (ResponseData.MenuItem.Item child : timetableMenuItem.rootItem.children) {
@@ -154,11 +218,12 @@ public class DataFetcher {
         GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
         gzip.write(input.getBytes("UTF-8"));
         gzip.close();
-        return outputStream.toString("UTF-8");
+        return Base64.encodeToString(outputStream.toByteArray(), Base64.DEFAULT);
     }
 
     private static String decompressFromGzip(@NonNull String input) throws IOException {
-        GZIPInputStream gzip = new GZIPInputStream(new ByteArrayInputStream(input.getBytes("UTF-8")));
+        byte[] inputBytes = Base64.decode(input, Base64.DEFAULT);
+        GZIPInputStream gzip = new GZIPInputStream(new ByteArrayInputStream(inputBytes));
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(gzip, "UTF-8"));
         StringBuilder stringBuilder = new StringBuilder();
         String line;

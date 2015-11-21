@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.Volley;
 import com.google.inject.Inject;
 
 import de.randombyte.sglvertretungsplan.DataFetcher;
@@ -198,8 +199,8 @@ public class LoginFragment extends Fragment {
          */
         @Override
         public Boolean call() throws Exception {
-            // todo think about check!!!
-            return DataFetcher.loadUrls(credentials, InstallationInfo.create(getContext())).size() > 0;
+            return DataFetcher.loadUrls(credentials, InstallationInfo.create(getContext()),
+                    Volley.newRequestQueue(context)) != null;
         }
     }
 }

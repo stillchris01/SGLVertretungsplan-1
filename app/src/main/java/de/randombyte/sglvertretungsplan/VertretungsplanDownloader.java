@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.android.volley.toolbox.Volley;
 import com.google.common.base.CharMatcher;
 
 import org.jsoup.Jsoup;
@@ -33,7 +34,8 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
     private final Credentials credentials;
     private final InstallationInfo installationInfo;
 
-    protected VertretungsplanDownloader(Context context, Credentials credentials, InstallationInfo installationInfo) {
+    protected VertretungsplanDownloader(Context context, Credentials credentials,
+                                        InstallationInfo installationInfo) {
         super(context);
         this.credentials = credentials;
         this.installationInfo = installationInfo;
@@ -45,7 +47,13 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
 
         Vertretungsplan vertretungsplan = new Vertretungsplan();
 
-        for (String url : DataFetcher.loadUrls(credentials, installationInfo)) {
+        List<String> urls = DataFetcher.loadUrls(credentials, installationInfo,
+                Volley.newRequestQueue(context));
+        if (urls == null) {
+            throw new DataFetcher.Exception("Something went wrong(see log above for more information)");
+        }
+
+        for (String url : urls) {
             Log.d("urls", url);
 
             Day day = new Day();
@@ -112,10 +120,12 @@ public abstract class VertretungsplanDownloader extends RoboAsyncTask<Vertretung
                         motdTextBuilder.append("\n");
                     } else {
                         // Removing leading space because one was added previously in loop
-                        motdTextBuilder.append(CharMatcher.WHITESPACE.trimLeadingFrom(((Element) childNode).text()));
+                        motdTextBuilder.append(CharMatcher.WHITESPACE.trimLeadingFrom(
+                                ((Element) childNode).text()));
                     }
                 } else if (childNode instanceof TextNode) {
-                    motdTextBuilder.append(CharMatcher.WHITESPACE.trimLeadingFrom(((TextNode) childNode).text()));
+                    motdTextBuilder.append(CharMatcher.WHITESPACE.trimLeadingFrom(
+                            ((TextNode) childNode).text()));
                 }
 
                 // Fixing spaces
