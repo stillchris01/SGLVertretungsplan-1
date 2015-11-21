@@ -143,7 +143,8 @@ public class DataFetcher {
         RequestFuture<JSONObject> requestFuture = RequestFuture.newFuture();
         String responseJson;
         try {
-            JsonObjectRequest request = new JsonObjectRequest(BASE_URL, new JSONObject(bodyJson), requestFuture, requestFuture);
+            JsonObjectRequest request = new JsonObjectRequest(BASE_URL, new JSONObject(bodyJson),
+                    requestFuture, requestFuture);
             queue.add(request);
             responseJson = requestFuture.get(TIMEOUT, TimeUnit.SECONDS).toString();
         } catch (JSONException e) {
