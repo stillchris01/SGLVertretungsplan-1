@@ -9,7 +9,8 @@ import com.google.gson.Gson;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadError;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanDownloadStartedEvent;
 import de.randombyte.sglvertretungsplan.events.VertretungsplanSavedEvent;
-import de.randombyte.sglvertretungsplan.models.Login;
+import de.randombyte.sglvertretungsplan.models.Credentials;
+import de.randombyte.sglvertretungsplan.models.InstallationInfo;
 import de.randombyte.sglvertretungsplan.models.VertretungsplanAndLogin;
 import roboguice.event.EventManager;
 
@@ -17,9 +18,10 @@ public class VertretungsplanManager {
 
     private static final String PREF_VERTRETUNGSPLAN_KEY = "savedVertretungplan";
 
-    public static void downloadAndSave(Context context, Login login, final EventManager eventManager) {
+    public static void downloadAndSave(Context context, Credentials credentials,
+                                       final EventManager eventManager) {
 
-        new VertretungsplanDownloader(context, login) {
+        new VertretungsplanDownloader(context, credentials, InstallationInfo.create(context)) {
 
             @Override
             protected void onPreExecute() throws Exception {
@@ -37,7 +39,7 @@ public class VertretungsplanManager {
                 editor.apply();
 
                 // Saving lastAuthId
-                LoginManager.save(sharedPreferences, vertretungsplanAndLogin.getLogin());
+                CredentialsManager.save(sharedPreferences, vertretungsplanAndLogin.getCredentials());
 
                 eventManager.fire(new VertretungsplanSavedEvent(vertretungsplanAndLogin.getVertretungsplan()));
             }

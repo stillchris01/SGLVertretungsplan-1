@@ -14,7 +14,7 @@ import com.google.inject.Inject;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.TestLoginFinishedEvent;
 import de.randombyte.sglvertretungsplan.events.TestLoginStartEvent;
-import de.randombyte.sglvertretungsplan.models.Login;
+import de.randombyte.sglvertretungsplan.models.Credentials;
 import roboguice.RoboGuice;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
@@ -28,10 +28,10 @@ public class LoginDialog extends DialogFragment {
 
     private Button loginButton;
 
-    public static LoginDialog newInstance(Login login) {
+    public static LoginDialog newInstance(Credentials credentials) {
 
         Bundle args = new Bundle();
-        args.putParcelable(LoginFragment.ARGS_LOGIN, login);
+        args.putParcelable(LoginFragment.ARGS_LOGIN, credentials);
 
         LoginDialog fragment = new LoginDialog();
         fragment.setArguments(args);

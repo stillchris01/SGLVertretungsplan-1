@@ -19,6 +19,7 @@
         <item>EF</item>
         <item>Q1</item>
         <item>Q2</item>
+        <item>Debug</item>
     </string-array>
 
     <string-array name="gk_lk_switcher_entries">

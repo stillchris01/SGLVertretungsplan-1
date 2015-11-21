@@ -1,8 +1,6 @@
 package de.randombyte.sglvertretungsplan.fragments;
 
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -13,16 +11,15 @@ import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
-import de.randombyte.sglvertretungsplan.LoginManager;
+import de.randombyte.sglvertretungsplan.CredentialsManager;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.LoginUpdatedEvent;
 import de.randombyte.sglvertretungsplan.fragments.login.LoginDialog;
-import de.randombyte.sglvertretungsplan.models.Login;
+import de.randombyte.sglvertretungsplan.models.Credentials;
 import roboguice.RoboGuice;
 import roboguice.event.Observes;
 
@@ -44,7 +41,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         findPreference(PREFS_LOGIN).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                showLoginDialog(getActivity(), getChildFragmentManager(), LoginManager.load(
+                showLoginDialog(getActivity(), getChildFragmentManager(), CredentialsManager.load(
                         PreferenceManager.getDefaultSharedPreferences(getActivity())
                 ));
 
@@ -52,11 +49,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-        findPreference("prefs_debug_link").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+        /*findPreference("prefs_debug_link").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
-                Login login = LoginManager.load(PreferenceManager.getDefaultSharedPreferences(getActivity()));
-                if (login.getLastAuthId() == null) {
+                Credentials credentials = CredentialsManager.load(PreferenceManager.getDefaultSharedPreferences(getActivity()));
+                if (credentials.getLastAuthId() == null) {
                     Toast.makeText(getActivity(), "Bitte Vertretungsplan zuerst neu laden!",
                             Toast.LENGTH_LONG).show();
 
@@ -64,22 +61,22 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 }
 
                 Intent debugLinkShowIntent = new Intent();
-                debugLinkShowIntent.setData(Uri.parse(Login.TIMETABLES_URL + "/" + login.getLastAuthId()));
+                debugLinkShowIntent.setData(Uri.parse(Credentials.TIMETABLES_URL + "/" + credentials.getLastAuthId()));
                 startActivity(debugLinkShowIntent);
 
                 return true;
             }
-        });
+        });*/
     }
 
     /**
      * Shows the LoginDialog
      * @param context Context to be used for RoboGuice EventManger
      * @param fragmentManager FragmentManager where the dialog will be shown
-     * @param login Login which is shown in the dialog
+     * @param credentials Credentials which is shown in the dialog
      * @return The shown LoginDialog
      */
-    public static LoginDialog showLoginDialog(Context context, FragmentManager fragmentManager, Login login) {
+    public static LoginDialog showLoginDialog(Context context, FragmentManager fragmentManager, Credentials credentials) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment fragment = fragmentManager.findFragmentByTag(LoginDialog.TAG);
         if (fragment != null) {
@@ -87,7 +84,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
         fragmentTransaction.addToBackStack(null);
 
-        LoginDialog dialog = LoginDialog.newInstance(login);
+        LoginDialog dialog = LoginDialog.newInstance(credentials);
         RoboGuice.getInjector(context).injectMembersWithoutViews(dialog);
         dialog.show(fragmentTransaction, LoginDialog.TAG);
 
@@ -117,7 +114,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }*/
 
     public void onLoginUpdated(@Observes LoginUpdatedEvent event) {
-        LoginManager.save(PreferenceManager.getDefaultSharedPreferences(getActivity()), event.getLogin());
+        CredentialsManager.save(PreferenceManager.getDefaultSharedPreferences(getActivity()), event.getCredentials());
     }
 
     @Override

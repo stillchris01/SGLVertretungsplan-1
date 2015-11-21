@@ -1,19 +1,19 @@
 package de.randombyte.sglvertretungsplan.events;
 
-import de.randombyte.sglvertretungsplan.models.Login;
+import de.randombyte.sglvertretungsplan.models.Credentials;
 
 /**
  * Fired when LoginFragment is onPause()
  */
 public class LoginUpdatedEvent {
 
-    private final Login login;
+    private final Credentials credentials;
 
-    public LoginUpdatedEvent(Login login) {
-        this.login = login;
+    public LoginUpdatedEvent(Credentials credentials) {
+        this.credentials = credentials;
     }
 
-    public Login getLogin() {
-        return login;
+    public Credentials getCredentials() {
+        return credentials;
     }
 }

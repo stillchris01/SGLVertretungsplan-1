@@ -6,18 +6,18 @@ package de.randombyte.sglvertretungsplan.models;
 public class VertretungsplanAndLogin {
 
     private final Vertretungsplan vertretungsplan;
-    private final Login login;
+    private final Credentials credentials;
 
-    public VertretungsplanAndLogin(Vertretungsplan vertretungsplan, Login login) {
+    public VertretungsplanAndLogin(Vertretungsplan vertretungsplan, Credentials credentials) {
         this.vertretungsplan = vertretungsplan;
-        this.login = login;
+        this.credentials = credentials;
     }
 
     public Vertretungsplan getVertretungsplan() {
         return vertretungsplan;
     }
 
-    public Login getLogin() {
-        return login;
+    public Credentials getCredentials() {
+        return credentials;
     }
 }

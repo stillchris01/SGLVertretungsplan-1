@@ -58,6 +58,7 @@ public class EditProfileActivity extends RoboActionBarActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 profile.setStufe(stufeList[position]);
+
                 // Oberstufe is not numeric(EF, Q1, Q2)
                 boolean oberstufe = !profile.getStufe().matches("\\d+");
                 profile.setOberstufe(oberstufe);

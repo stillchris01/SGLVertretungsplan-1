@@ -17,13 +17,16 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.android.volley.toolbox.Volley;
 import com.google.inject.Inject;
 
+import de.randombyte.sglvertretungsplan.DataFetcher;
 import de.randombyte.sglvertretungsplan.R;
 import de.randombyte.sglvertretungsplan.events.LoginUpdatedEvent;
 import de.randombyte.sglvertretungsplan.events.TestLoginFinishedEvent;
 import de.randombyte.sglvertretungsplan.events.TestLoginStartEvent;
-import de.randombyte.sglvertretungsplan.models.Login;
+import de.randombyte.sglvertretungsplan.models.Credentials;
+import de.randombyte.sglvertretungsplan.models.InstallationInfo;
 import roboguice.event.EventManager;
 import roboguice.event.Observes;
 import roboguice.util.RoboAsyncTask;
@@ -48,7 +51,7 @@ public class LoginFragment extends Fragment {
 
     private @Inject EventManager eventManager;
 
-    private Login login;
+    private Credentials credentials;
     private boolean isIntro;
 
     private EditText username;
@@ -58,10 +61,10 @@ public class LoginFragment extends Fragment {
     private TextView loginStatus;
     private AsyncTask runningTask;
 
-    public static LoginFragment newInstance(@Nullable Login login, boolean isIntro) {
+    public static LoginFragment newInstance(@Nullable Credentials credentials, boolean isIntro) {
 
         Bundle args = new Bundle();
-        args.putParcelable(ARGS_LOGIN, login);
+        args.putParcelable(ARGS_LOGIN, credentials);
         args.putBoolean(ARGS_IS_INTRO, isIntro);
 
         LoginFragment fragment = new LoginFragment();
@@ -74,11 +77,11 @@ public class LoginFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null) {
-            login = savedInstanceState.getParcelable(ARGS_LOGIN);
+            credentials = savedInstanceState.getParcelable(ARGS_LOGIN);
         } else {
-            login = getArguments().getParcelable(ARGS_LOGIN);
-            if (login == null) {
-                login = new Login("","");
+            credentials = getArguments().getParcelable(ARGS_LOGIN);
+            if (credentials == null) {
+                credentials = new Credentials("","");
             }
             isIntro = getArguments().getBoolean(ARGS_IS_INTRO, false);
         }
@@ -106,8 +109,8 @@ public class LoginFragment extends Fragment {
             passwordInputLayout.setHintTextAppearance(R.style.LightTextHintAppearance);
             loginStatus.setTextColor(Color.WHITE);
         }
-        username.setText(login.getUsername());
-        password.setText(login.getPassword());
+        username.setText(credentials.getUsername());
+        password.setText(credentials.getPassword());
         password.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -129,8 +132,8 @@ public class LoginFragment extends Fragment {
 
         runningTask = null; // Cancel the hard way?!
 
-        Login login = constructLogin();
-        eventManager.fire(new LoginUpdatedEvent(login));
+        Credentials credentials = constructLogin();
+        eventManager.fire(new LoginUpdatedEvent(credentials));
     }
 
     @Override
@@ -140,11 +143,11 @@ public class LoginFragment extends Fragment {
         outState.putParcelable(ARGS_LOGIN, constructLogin());
     }
 
-    private Login constructLogin() {
-        login = new Login(
+    private Credentials constructLogin() {
+        credentials = new Credentials(
                 username.getEditableText().toString().trim(),
                 password.getEditableText().toString().trim());
-        return login;
+        return credentials;
     }
 
     public void onStartTestLogin(@Observes TestLoginStartEvent event) {
@@ -184,19 +187,20 @@ public class LoginFragment extends Fragment {
 
     private static class TestLogin extends RoboAsyncTask<Boolean> {
 
-        private final Login login;
+        private final Credentials credentials;
 
-        protected TestLogin(Context context, Login login) {
+        protected TestLogin(Context context, Credentials credentials) {
             super(context);
-            this.login = login;
+            this.credentials = credentials;
         }
 
         /**
-         * @return Success logging in with given login
+         * @return Success logging in with given credentials
          */
         @Override
         public Boolean call() throws Exception {
-            return !login.loadLinks()[0].getUrl().contains("NoContent");
+            return DataFetcher.loadUrls(credentials, InstallationInfo.create(getContext()),
+                    Volley.newRequestQueue(context)) != null;
         }
     }
 }
