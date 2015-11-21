@@ -8,5 +8,5 @@
     </Preference>
     <Preference android:key="prefs_login" android:title="Logindaten ändern" />
     <!--<CheckBoxPreference android:key="prefs_first_start" android:title="FirstStart" />-->
-    <Preference android:key="prefs_debug_link" android:title="Debug-Link" />
+    <!--<Preference android:key="prefs_debug_link" android:title="Debug-Link" />-->
 </PreferenceScreen>
