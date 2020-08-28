@@ -1,3 +1,5 @@
+![GitHub](https://img.shields.io/github/license/stillchris01/langweiligerbot)
+
 # SGLVertretungsplan
 An app for showing the "Vertretungsplan" of the SGL.
 
